@@ -3,11 +3,13 @@ package realtalk.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import realtalk.model.User;
 import realtalk.repository.UserRepository;
 import realtalk.service.exception.ChatNotFoundException;
 import realtalk.service.exception.UserLoginExistsException;
 import realtalk.service.exception.WrongLoginOrPasswordException;
+import realtalk.util.FileUploadUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +18,8 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private FileUploadUtil fileUploadUtil;
 
     @Transactional(readOnly = true)
     public List<User> findAllUsers() {
@@ -29,20 +33,18 @@ public class UserService {
     }
 
     @Transactional
-    public User registration(String login, String password, String name, String surname) {
-        if(userRepository.findByLogin(login) == null) {
-            final User user = new User(login, password, name, surname);
+    public User registration(User user) {
+        if(userRepository.findByLogin(user.getLogin()) == null) {
             //validate
             return userRepository.save(user);
         } else {
-            throw new UserLoginExistsException(login);
+            throw new UserLoginExistsException(user.getLogin());
         }
     }
 
     @Transactional
-    public String authentication(String login, String password){
-        final User user = userRepository.findByLogin(login);
-        if(user == null){
+    public String authentication(User user){
+        if(userRepository.findByLogin(user.getLogin()) == null){
             throw new WrongLoginOrPasswordException();
         }else {
             //TODO: jwt токен секьюрити
@@ -50,11 +52,15 @@ public class UserService {
         }
     }
 
-    //TODO: update user
     @Transactional
-    public User updateUser(User user){
+    public User updateUser(User user, MultipartFile file){
         final User curUser = findUser(user.getId());
-        return curUser;
+        curUser.setName(user.getName());
+        curUser.setSurname(user.getSurname());
+        if(file!=null){
+            curUser.setPhoto(fileUploadUtil.uploadFile(file));
+        }
+        return userRepository.save(curUser);
     }
 
     public void subscribe(User user, User subscribed){
