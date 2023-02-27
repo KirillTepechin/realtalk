@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +13,8 @@ import java.util.Set;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "users")
+@RequiredArgsConstructor
+@Table(name = "\"User\"")
 public class User {
 
     @Id
