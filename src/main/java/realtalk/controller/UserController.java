@@ -2,6 +2,7 @@ package realtalk.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import realtalk.dto.LoginDto;
@@ -20,6 +21,7 @@ public class UserController {
     private UserService userService;
     @Autowired
     private UserMapper userMapper;
+
     @PostMapping("/register")
     public void register(@Valid @RequestBody RegisterDto registerDto) {
         User user = userMapper.fromRegisterDto(registerDto);
@@ -33,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public User me(User user) {
+    public User me(@AuthenticationPrincipal User user) {
         return user;
     }
 

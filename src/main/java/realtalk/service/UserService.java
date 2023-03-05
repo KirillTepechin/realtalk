@@ -1,9 +1,14 @@
 package realtalk.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import realtalk.jwt.JwtProvider;
 import realtalk.model.User;
 import realtalk.repository.UserRepository;
 import realtalk.service.exception.ChatNotFoundException;
@@ -15,11 +20,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private FileUploadUtil fileUploadUtil;
+    @Autowired
+    private JwtProvider jwtProvider;
+    @Autowired
+    PasswordEncoder encoder;
 
     @Transactional(readOnly = true)
     public List<User> findAllUsers() {
@@ -36,6 +45,7 @@ public class UserService {
     public User registration(User user) {
         if(userRepository.findByLogin(user.getLogin()) == null) {
             //validate
+            user.setPassword(encoder.encode(user.getPassword()));
             return userRepository.save(user);
         } else {
             throw new UserLoginExistsException(user.getLogin());
@@ -43,12 +53,15 @@ public class UserService {
     }
 
     @Transactional
-    public String authentication(User user){
-        if(userRepository.findByLogin(user.getLogin()) == null){
+    public String authentication(User user) {
+        User userDB = userRepository.findByLogin(user.getLogin());
+        if (userDB == null) {
             throw new WrongLoginOrPasswordException();
-        }else {
-            //TODO: jwt токен секьюрити
-            return "";
+        }
+        if (encoder.matches(user.getPassword(), userDB.getPassword())) {
+            return jwtProvider.generateAccessToken(user);
+        } else {
+            throw new WrongLoginOrPasswordException();
         }
     }
 
@@ -78,5 +91,10 @@ public class UserService {
         final User user = findUser(id);
         userRepository.delete(user);
         return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByLogin(username);
     }
 }

@@ -7,6 +7,7 @@ import realtalk.model.Comment;
 import realtalk.model.Post;
 import realtalk.model.User;
 import realtalk.repository.CommentRepository;
+import realtalk.service.exception.CommentNotFoundException;
 
 import java.util.Date;
 import java.util.List;
@@ -25,8 +26,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public Comment findComment(Long id) {
         final Optional<Comment> comment = commentRepository.findById(id);
-        //return comment.orElseThrow(() -> new ChatNotFoundException(id));
-        return comment.orElse(null);
+        return comment.orElseThrow(() -> new CommentNotFoundException(id));
     }
 
     @Transactional
