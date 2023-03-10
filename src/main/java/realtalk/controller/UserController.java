@@ -13,7 +13,7 @@ import realtalk.model.User;
 import realtalk.service.UserService;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/")
 public class UserController {
