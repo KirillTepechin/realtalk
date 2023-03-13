@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
-import realtalk.service.UserService;
+import realtalk.repository.UserRepository;
 
 import java.io.IOException;
 
@@ -24,7 +24,7 @@ public class JwtFilter extends GenericFilterBean {
     @Autowired
     private JwtProvider jwtProvider;
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
@@ -32,7 +32,7 @@ public class JwtFilter extends GenericFilterBean {
         final String token = getTokenFromRequest((HttpServletRequest) request);
         if (token != null && jwtProvider.validateAccessToken(token)) {
             String login = jwtProvider.getLogin(token);
-            UserDetails userDetails = userService.loadUserByUsername(login);
+            UserDetails userDetails = userRepository.findByLogin(login);
             Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

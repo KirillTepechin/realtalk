@@ -28,7 +28,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private JwtProvider jwtProvider;
     @Autowired
-    PasswordEncoder encoder;
+    private PasswordEncoder encoder;
 
     @Transactional(readOnly = true)
     public List<User> findAllUsers() {

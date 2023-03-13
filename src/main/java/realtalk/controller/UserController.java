@@ -35,8 +35,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public User me(@AuthenticationPrincipal User user) {
-        return user;
+    public UserDto me(@AuthenticationPrincipal User user) {
+        return userMapper.toUserDto(user);
     }
 
     @PutMapping(value = "/edit-profile", consumes = {MULTIPART_FORM_DATA_VALUE})

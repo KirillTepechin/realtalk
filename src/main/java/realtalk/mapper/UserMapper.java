@@ -11,4 +11,5 @@ public interface UserMapper {
     User fromRegisterDto(RegisterDto dto);
     User fromLoginDto(LoginDto dto);
     User fromUserDto(UserDto dto);
+    UserDto toUserDto(User user);
 }
