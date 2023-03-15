@@ -1,13 +1,12 @@
 package realtalk.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import realtalk.dto.LoginDto;
-import realtalk.dto.RegisterDto;
-import realtalk.dto.UserDto;
+import realtalk.dto.*;
 import realtalk.mapper.UserMapper;
 import realtalk.model.User;
 import realtalk.service.UserService;
@@ -33,18 +32,28 @@ public class UserController {
         User user = userMapper.fromLoginDto(loginDto);
         return userService.authentication(user);
     }
-
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/me")
     public UserDto me(@AuthenticationPrincipal User user) {
         return userMapper.toUserDto(user);
     }
-
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/edit-profile", consumes = {MULTIPART_FORM_DATA_VALUE})
-    public User editProfile(@RequestParam String name,@RequestParam String surname,@RequestParam MultipartFile file){
-        User user = new User();
-        user.setName(name);
-        user.setSurname(surname);
-        return userService.updateUser(user, file);
+    public UserEditDto editProfile(@AuthenticationPrincipal User user, @RequestParam(required = false) String name,
+                                   @RequestParam(required = false) String surname, @RequestParam(required = false) String password,
+                                   @RequestParam(required = false) String login, @RequestParam(required = false) MultipartFile file){
+        return userMapper.toUserEditDto(userService.updateUser(user,login, password, name, surname, file));
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PutMapping("/subscribe/{id}")
+    public boolean subscribe(@AuthenticationPrincipal User user, @PathVariable Long id) {
+        return userService.subscribe(user, userService.findUser(id));
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/subscribers-subscriptions")
+    public UserSubDto getSubscribersAndSubscriptions(@AuthenticationPrincipal User user) {
+        return userMapper.toUserSubDto(user);
+    }
 }

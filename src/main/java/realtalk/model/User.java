@@ -1,17 +1,18 @@
 package realtalk.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import realtalk.model.enums.Role;
 
 import java.util.*;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class User implements UserDetails {
     @NonNull
     private String surname;
     private String photo;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_subscribers",
             joinColumns = { @JoinColumn(name = "user_id") },
@@ -39,7 +40,7 @@ public class User implements UserDetails {
     )
     private Set<User> subscribers = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_subscriptions",
             joinColumns = { @JoinColumn(name = "subscription_id") },
@@ -49,14 +50,17 @@ public class User implements UserDetails {
 
     @OneToMany
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private List<Post> posts;
 
     @OneToMany
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private List<Comment> comments;
 
     @OneToMany
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private List<Message> messages;
 
     @ManyToMany
@@ -65,11 +69,12 @@ public class User implements UserDetails {
             joinColumns = { @JoinColumn(name = "chat_id") },
             inverseJoinColumns = { @JoinColumn(name = "user_id") }
     )
+    @ToString.Exclude
     private List<Chat> chats;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("User"));
+        return Collections.singleton(new SimpleGrantedAuthority(Role.USER.name()));
     }
 
     @Override
@@ -95,5 +100,18 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        User user = (User) o;
+        return id != null && Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

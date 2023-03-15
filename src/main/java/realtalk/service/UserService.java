@@ -66,23 +66,41 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User updateUser(User user, MultipartFile file){
+    public User updateUser(User user,String login,String password, String name, String surname, MultipartFile file){
         final User curUser = findUser(user.getId());
-        curUser.setName(user.getName());
-        curUser.setSurname(user.getSurname());
-        if(file!=null){
+        if(name != null && !name.isBlank())
+            curUser.setName(name);
+        if(login != null && !login.isBlank())
+            curUser.setLogin(login);
+        if(password != null && !password.isBlank())
+            curUser.setPassword(encoder.encode(password));
+        if(surname != null && !surname.isBlank())
+            curUser.setSurname(surname);
+        if(file!=null)
             curUser.setPhoto(fileUploadUtil.uploadFile(file));
-        }
+
         return userRepository.save(curUser);
     }
-
-    public void subscribe(User user, User subscribed){
+    @Transactional
+    public boolean subscribe(User user, User subscribed){
         if(!user.getSubscriptions().contains(subscribed)) {
             user.getSubscriptions().add(subscribed);
             subscribed.getSubscribers().add(user);
+
+            userRepository.save(user);
+            userRepository.save(subscribed);
+
+            userRepository.flush();
+            return true;
         }else {
             user.getSubscriptions().remove(subscribed);
             subscribed.getSubscribers().remove(user);
+
+            userRepository.save(user);
+            userRepository.save(subscribed);
+
+            userRepository.flush();
+            return false;
         }
     }
 
@@ -92,9 +110,9 @@ public class UserService implements UserDetailsService {
         userRepository.delete(user);
         return user;
     }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByLogin(username);
     }
+
 }
