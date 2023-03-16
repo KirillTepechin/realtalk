@@ -24,7 +24,8 @@ public class PostService {
     }
 
     @Transactional
-    public Post addPost(User user, String text, Date date) {
+    public Post createPost(User user, String text) {
+        Date date = new Date();
         final Post post = new Post(text, date, user);
         //validate
         return postRepository.save(post);
@@ -32,6 +33,7 @@ public class PostService {
 
     @Transactional
     public Post updatePost(Long id, String text){
+        //TODO: нужно ли проверять на автора поста??
         final Post post = findPost(id);
         post.setText(text);
         return postRepository.save(post);
@@ -40,6 +42,10 @@ public class PostService {
     @Transactional
     public List<Post> getUserPosts(User user){
         return postRepository.findAllByUser(user);
+    }
+
+    public List<Post> getFeed(User user) {
+        return postRepository.findAllByUserIn(user.getSubscriptions());
     }
 
     @Transactional
@@ -55,6 +61,7 @@ public class PostService {
 
     @Transactional
     public Post deletePost(Long id) {
+        //TODO: нужно ли проверять на автора поста??
         final Post post = findPost(id);
         postRepository.delete(post);
         return post;
@@ -64,4 +71,5 @@ public class PostService {
     public void deleteAllUserPosts(User user){
         postRepository.deleteAll(postRepository.findAllByUser(user));
     }
+
 }

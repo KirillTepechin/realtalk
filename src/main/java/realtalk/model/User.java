@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @NonNull
     private String surname;
     private String photo;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "user_subscribers",
             joinColumns = { @JoinColumn(name = "user_id") },
@@ -40,7 +40,7 @@ public class User implements UserDetails {
     )
     private Set<User> subscribers = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
             joinColumns = { @JoinColumn(name = "subscription_id") },

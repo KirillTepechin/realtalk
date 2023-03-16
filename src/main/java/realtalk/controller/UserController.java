@@ -34,8 +34,8 @@ public class UserController {
     }
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/me")
-    public UserDto me(@AuthenticationPrincipal User user) {
-        return userMapper.toUserDto(user);
+    public UserProfileInfoDto me(@AuthenticationPrincipal User user) {
+        return userMapper.toUserProfileInfoDto(user);
     }
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/edit-profile", consumes = {MULTIPART_FORM_DATA_VALUE})
@@ -45,15 +45,12 @@ public class UserController {
         return userMapper.toUserEditDto(userService.updateUser(user,login, password, name, surname, file));
     }
 
+    /**
+     * @return true - подписался, false - отписался
+     */
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/subscribe/{id}")
     public boolean subscribe(@AuthenticationPrincipal User user, @PathVariable Long id) {
         return userService.subscribe(user, userService.findUser(id));
-    }
-
-    @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/subscribers-subscriptions")
-    public UserSubDto getSubscribersAndSubscriptions(@AuthenticationPrincipal User user) {
-        return userMapper.toUserSubDto(user);
     }
 }
