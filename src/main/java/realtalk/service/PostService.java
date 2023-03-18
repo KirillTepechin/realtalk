@@ -33,7 +33,6 @@ public class PostService {
 
     @Transactional
     public Post updatePost(Long id, String text){
-        //TODO: нужно ли проверять на автора поста??
         final Post post = findPost(id);
         post.setText(text);
         return postRepository.save(post);
@@ -61,7 +60,6 @@ public class PostService {
 
     @Transactional
     public Post deletePost(Long id) {
-        //TODO: нужно ли проверять на автора поста??
         final Post post = findPost(id);
         postRepository.delete(post);
         return post;

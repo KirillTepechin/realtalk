@@ -11,6 +11,8 @@ import realtalk.mapper.UserMapper;
 import realtalk.model.User;
 import realtalk.service.UserService;
 
+import java.util.List;
+
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @CrossOrigin(origins = "*")
 @RestController
@@ -52,5 +54,12 @@ public class UserController {
     @PutMapping("/subscribe/{id}")
     public boolean subscribe(@AuthenticationPrincipal User user, @PathVariable Long id) {
         return userService.subscribe(user, userService.findUser(id));
+    }
+
+    @GetMapping("/users")
+    public List<UserEditDto> findAllUsers(){
+        return userService.findAllUsers().stream()
+                .map(user -> userMapper.toUserEditDto(user))
+                .toList();
     }
 }

@@ -3,6 +3,7 @@ package realtalk.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import realtalk.dto.PostDto;
 import realtalk.model.Comment;
 import realtalk.model.Post;
 import realtalk.model.User;
@@ -18,6 +19,9 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private PostService postService;
+
     @Transactional(readOnly = true)
     public List<Comment> findAllComments() {
         return commentRepository.findAll();
@@ -30,7 +34,9 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment addComment(User user, Post post, String text, Date date) {
+    public Comment addComment(User user, Long postId, String text) {
+        Date date = new Date();
+        final Post post = postService.findPost(postId);
         final Comment comment = new Comment(user, post, text, date);
         //validate
         return commentRepository.save(comment);
