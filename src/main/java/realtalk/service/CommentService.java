@@ -50,13 +50,17 @@ public class CommentService {
     }
 
     @Transactional
-    public void likeComment(User user, Comment comment){
+    public boolean likeComment(User user, Comment comment){
         if(!comment.getLikes().contains(user)) {
             comment.getLikes().add(user);
             commentRepository.save(comment);
+
+            return true;
         }else {
             comment.getLikes().remove(user);
             commentRepository.save(comment);
+
+            return false;
         }
     }
 

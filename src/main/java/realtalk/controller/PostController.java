@@ -6,8 +6,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import realtalk.dto.PostDto;
 import realtalk.mapper.PostMapper;
-import realtalk.mapper.UserMapper;
-import realtalk.model.Post;
 import realtalk.model.User;
 import realtalk.service.PostService;
 
@@ -36,6 +34,15 @@ public class PostController {
     @DeleteMapping("/{id}")
     public PostDto deletePost(@PathVariable Long id){
         return postMapper.toPostDto(postService.deletePost(id));
+    }
+
+    /**
+     * @return true - поставил лайк, false - убрал лайк
+     */
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PutMapping("/like/{id}")
+    public boolean like(@AuthenticationPrincipal User user, @PathVariable Long id) {
+        return postService.likePost(user, postService.findPost(id));
     }
 
     @SecurityRequirement(name = "Bearer Authentication")

@@ -29,5 +29,8 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "user_id")
     public User user;
-
+    @PostPersist
+    void updateChatLastMessageDate(){
+        chat.setLastMessageDate(date);
+    }
 }

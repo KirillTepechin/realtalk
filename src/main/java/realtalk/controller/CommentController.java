@@ -36,4 +36,15 @@ public class CommentController {
     public CommentDto deleteComment(@PathVariable Long id){
         return commentMapper.toCommentDto(commentService.deleteComment(id));
     }
+
+    /**
+     * @return true - поставил лайк, false - убрал лайк
+     */
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PutMapping("/like/{id}")
+    public boolean like(@AuthenticationPrincipal User user, @PathVariable Long id) {
+        //TODO: В будущем нужно подумать о полиморфизме comment и post
+        return commentService.likeComment(user, commentService.findComment(id));
+    }
+
 }

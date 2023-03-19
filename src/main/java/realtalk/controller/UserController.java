@@ -41,10 +41,10 @@ public class UserController {
     }
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/edit-profile", consumes = {MULTIPART_FORM_DATA_VALUE})
-    public UserEditDto editProfile(@AuthenticationPrincipal User user, @RequestParam(required = false) String name,
+    public UserDto editProfile(@AuthenticationPrincipal User user, @RequestParam(required = false) String name,
                                    @RequestParam(required = false) String surname, @RequestParam(required = false) String password,
                                    @RequestParam(required = false) String login, @RequestParam(required = false) MultipartFile file){
-        return userMapper.toUserEditDto(userService.updateUser(user,login, password, name, surname, file));
+        return userMapper.toUserDto(userService.updateUser(user,login, password, name, surname, file));
     }
 
     /**
@@ -57,9 +57,9 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<UserEditDto> findAllUsers(){
+    public List<UserDto> findAllUsers(){
         return userService.findAllUsers().stream()
-                .map(user -> userMapper.toUserEditDto(user))
+                .map(user -> userMapper.toUserDto(user))
                 .toList();
     }
 }

@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -32,7 +30,7 @@ public class Post {
     @NonNull
     private User user;
 
-    @OneToMany(fetch=FetchType.EAGER)
+    @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "post_id")
     private List<Comment> comments;
 

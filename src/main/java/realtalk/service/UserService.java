@@ -1,5 +1,6 @@
 package realtalk.service;
 
+import jakarta.persistence.EntityGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -70,8 +71,13 @@ public class UserService implements UserDetailsService {
         final User curUser = findUser(user.getId());
         if(name != null && !name.isBlank())
             curUser.setName(name);
-        if(login != null && !login.isBlank())
-            curUser.setLogin(login);
+        if(login != null && !login.isBlank()){
+            if(userRepository.findByLogin(user.getLogin()) == null) {
+                curUser.setLogin(login);
+            } else {
+                throw new UserLoginExistsException(login);
+            }
+        }
         if(password != null && !password.isBlank())
             curUser.setPassword(encoder.encode(password));
         if(surname != null && !surname.isBlank())
@@ -90,7 +96,6 @@ public class UserService implements UserDetailsService {
             userRepository.save(user);
             userRepository.save(subscribed);
 
-            userRepository.flush();
             return true;
         }else {
             user.getSubscriptions().remove(subscribed);
@@ -99,7 +104,6 @@ public class UserService implements UserDetailsService {
             userRepository.save(user);
             userRepository.save(subscribed);
 
-            userRepository.flush();
             return false;
         }
     }

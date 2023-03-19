@@ -16,5 +16,4 @@ public class UserProfileInfoDto {
     private String photo;
     private Set<UserDto> subscribers;
     private Set<UserDto> subscriptions;
-    private List<PostDto> posts;
 }

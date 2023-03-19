@@ -48,13 +48,17 @@ public class PostService {
     }
 
     @Transactional
-    public void likePost(User user, Post post){
+    public boolean likePost(User user, Post post){
         if(!post.getLikes().contains(user)) {
             post.getLikes().add(user);
             postRepository.save(post);
+
+            return true;
         }else {
             post.getLikes().remove(user);
             postRepository.save(post);
+
+            return false;
         }
     }
 
