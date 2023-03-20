@@ -1,6 +1,5 @@
 package realtalk.service;
 
-import jakarta.persistence.EntityGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,8 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import realtalk.jwt.JwtProvider;
 import realtalk.model.User;
 import realtalk.repository.UserRepository;
-import realtalk.service.exception.ChatNotFoundException;
 import realtalk.service.exception.UserLoginExistsException;
+import realtalk.service.exception.UserNotFoundException;
 import realtalk.service.exception.WrongLoginOrPasswordException;
 import realtalk.util.FileUploadUtil;
 
@@ -39,7 +38,20 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public User findUser(Long id) {
         final Optional<User> user = userRepository.findById(id);
-        return user.orElseThrow(() -> new ChatNotFoundException(id));
+        return user.orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    @Transactional(readOnly = true)
+    public User findUserByLogin(String login){
+        return userRepository.findByLogin(login);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> findUsersByQuery(String query){
+//        String template = "%" + query + "%";
+//        query = template.toUpperCase();
+        query = query.toUpperCase();
+        return userRepository.findByLoginIgnoreCaseContainingOrNameIgnoreCaseContainingOrSurnameIgnoreCaseContaining(query, query, query);
     }
 
     @Transactional

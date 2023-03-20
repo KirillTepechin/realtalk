@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Fetch;
 
 import java.util.Date;
 import java.util.List;
@@ -26,5 +27,9 @@ public class Chat {
     @NonNull
     @ManyToMany(mappedBy = "chats")
     public List<User> users;
+    @PreRemove
+    public void preRemove(){
+        users.forEach(user -> user.getChats().remove(this));
+    }
     public Date lastMessageDate;
 }

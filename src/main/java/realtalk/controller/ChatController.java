@@ -13,6 +13,8 @@ import realtalk.service.ChatService;
 
 import java.util.List;
 
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/chat")
@@ -28,10 +30,9 @@ public class ChatController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     //TODO: будут ли у чатов создатели с доп правами, например на удаление?
-    public Long createChat(@AuthenticationPrincipal User user, @RequestBody ChatCreateDto chatCreateDto){
+    public ChatDto createChat(@AuthenticationPrincipal User user, @RequestBody ChatCreateDto chatCreateDto){
         chatCreateDto.getUserIds().add(user.getId());
-        //Возвращаем id чата, что бы на фронте(☠), после создания чата, сразу переходить на уникальный чат
-        return chatService.createChat(chatCreateDto.getName(), chatCreateDto.getUserIds());
+        return chatMapper.toChatDto(chatService.createChat(chatCreateDto.getName(), chatCreateDto.getUserIds()));
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
@@ -43,7 +44,7 @@ public class ChatController {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @PutMapping("/{id}")
+    @PutMapping(value = "edit-chat/{id}", consumes = {MULTIPART_FORM_DATA_VALUE})
     public ChatDto editChat(@PathVariable Long id, @RequestParam(required = false) String name,
                             @RequestParam(required = false) MultipartFile image ){
         return chatMapper.toChatDto(chatService.editChat(id, name, image));
@@ -57,7 +58,7 @@ public class ChatController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/leave/{id}")
-    public ChatDto leaveChat(@AuthenticationPrincipal User user, Long id){
+    public ChatDto leaveChat(@AuthenticationPrincipal User user, @PathVariable Long id){
         return chatMapper.toChatDto(chatService.leaveChat(user, id));
     }
 

@@ -3,12 +3,15 @@ package realtalk.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import realtalk.dto.*;
+import realtalk.mapper.PostMapper;
 import realtalk.mapper.UserMapper;
 import realtalk.model.User;
+import realtalk.service.PostService;
 import realtalk.service.UserService;
 
 import java.util.List;
@@ -21,7 +24,11 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
+    private PostService postService;
+    @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private PostMapper postMapper;
 
     @PostMapping("/register")
     public void register(@Valid @RequestBody RegisterDto registerDto) {
@@ -60,6 +67,27 @@ public class UserController {
     public List<UserDto> findAllUsers(){
         return userService.findAllUsers().stream()
                 .map(user -> userMapper.toUserDto(user))
+                .toList();
+    }
+
+    @GetMapping("/find")
+    public List<UserProfileInfoDto> findUsersByQuery(@RequestParam String query){
+        return userService.findUsersByQuery(query)
+                .stream()
+                .map(user -> userMapper.toUserProfileInfoDto(user))
+                .toList();
+    }
+
+    @GetMapping("/{login}")
+    public UserProfileInfoDto viewProfile(@PathVariable String login){
+        return userMapper.toUserProfileInfoDto(userService.findUserByLogin(login));
+    }
+
+    @GetMapping("/user-posts/{login}")
+    public List<PostDto> viewUserPosts(@PathVariable String login) {
+        return postService.getUserPosts(userService.findUserByLogin(login))
+                .stream()
+                .map(post -> postMapper.toPostDto(post))
                 .toList();
     }
 }

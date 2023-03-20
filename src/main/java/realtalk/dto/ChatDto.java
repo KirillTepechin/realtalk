@@ -2,9 +2,12 @@ package realtalk.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ChatDto {
-    public Long id;
-    public String name;
-    public String image;
+    private Long id;
+    private String name;
+    private String image;
+    private List<UserDto> users;
 }

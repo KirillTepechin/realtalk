@@ -66,8 +66,8 @@ public class User implements UserDetails {
     @ManyToMany
     @JoinTable(
             name = "user_chat",
-            joinColumns = { @JoinColumn(name = "chat_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "chat_id") }
     )
     @ToString.Exclude
     private List<Chat> chats;

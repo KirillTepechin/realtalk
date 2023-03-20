@@ -9,6 +9,8 @@ import org.hibernate.validator.constraints.Length;
  */
 @Data
 public class UserDto {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long id;
     @Length(min = 3, max = 20)
     private String login;
     @Length(min = 3, max = 20)

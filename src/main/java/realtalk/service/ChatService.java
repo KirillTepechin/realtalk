@@ -10,6 +10,7 @@ import realtalk.model.User;
 import realtalk.repository.ChatRepository;
 import realtalk.repository.UserRepository;
 import realtalk.service.exception.ChatNotFoundException;
+import realtalk.service.exception.UserNotFoundException;
 import realtalk.util.FileUploadUtil;
 
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import java.util.Optional;
 public class ChatService {
     @Autowired
     private ChatRepository chatRepository;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private UserService userService;
     @Autowired
@@ -37,15 +40,16 @@ public class ChatService {
     }
 
     @Transactional
-    //TODO:Не связывается
-    public Long createChat(String name, List<Long> usersId) {
-        List<User> users = new ArrayList<>();
-        if(usersId != null) {
-            users = usersId.stream().map(id -> userService.findUser(id)).toList();
-        }
+    public Chat createChat(String name, List<Long> usersId) {
+        List<User> users = usersId.stream().map(id -> userService.findUser(id)).toList();
         final Chat chat = new Chat(name, users);
+        chatRepository.save(chat);
+        users.forEach(user -> {
+            user.getChats().add(chat);
+            userRepository.save(user);
+        });
         //validate
-        return chatRepository.save(chat).getId();
+        return chat;
     }
 
     @Transactional
@@ -64,15 +68,27 @@ public class ChatService {
     public Chat leaveChat(User user, Long id) {
         final Chat curChat = findChat(id);
         curChat.getUsers().remove(user);
-        return chatRepository.save(curChat);
+        chatRepository.save(curChat);
+        //TODO: wtf?????????????????
+        User userDB = userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException(user.getId()));
+        userDB.getChats().remove(curChat);
+        userRepository.save(userDB);
+//        user.getChats().remove(curChat);
+//        userRepository.save(user);
+        return curChat;
     }
 
     @Transactional
     public Chat addUsersToChat(List<Long> userIds, Long id) {
         final Chat curChat = findChat(id);
-        userIds.forEach(user -> curChat.getUsers().add(userService.findUser(id)));
-
-        return chatRepository.save(curChat);
+        userIds.forEach(userId -> curChat.getUsers().add(userService.findUser(userId)));
+        chatRepository.save(curChat);
+        userIds.forEach(userId -> {
+            User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+            user.getChats().add(curChat);
+            userRepository.save(user);
+        });
+        return curChat;
     }
 
     @Transactional
