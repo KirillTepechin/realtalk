@@ -18,7 +18,6 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/chat")
-//TODO: проверить все методы
 public class ChatController {
 
     @Autowired
