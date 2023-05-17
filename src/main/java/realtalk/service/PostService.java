@@ -11,6 +11,7 @@ import realtalk.service.exception.PostNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PostService {
@@ -24,17 +25,18 @@ public class PostService {
     }
 
     @Transactional
-    public Post createPost(User user, String text) {
+    public Post createPost(User user, String text, String tag) {
         Date date = new Date();
-        final Post post = new Post(text, date, user);
+        final Post post = new Post(text, date, tag, user);
         //validate
         return postRepository.save(post);
     }
 
     @Transactional
-    public Post updatePost(Long id, String text){
+    public Post updatePost(Long id, String text, String tag){
         final Post post = findPost(id);
         post.setText(text);
+        post.setTag(tag);
         return postRepository.save(post);
     }
 
@@ -45,6 +47,10 @@ public class PostService {
 
     public List<Post> getFeed(User user) {
         return postRepository.findAllByUserIn(user.getSubscriptions());
+    }
+
+    public List<Post> getRecommendFeed(User user) {
+        return postRepository.findAllByTagIn(user.getTags());
     }
 
     @Transactional

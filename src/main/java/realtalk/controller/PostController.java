@@ -23,12 +23,12 @@ public class PostController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public PostDto createPost(@AuthenticationPrincipal User user, @RequestBody PostDto postDto){
-        return postMapper.toPostDto(postService.createPost(user, postDto.getText()));
+        return postMapper.toPostDto(postService.createPost(user, postDto.getText(), postDto.getTag()));
     }
 
     @PutMapping("/{id}")
     public PostDto editPost(@PathVariable Long id, @RequestBody PostDto postDto){
-        return postMapper.toPostDto(postService.updatePost(id, postDto.getText()));
+        return postMapper.toPostDto(postService.updatePost(id, postDto.getText(), postDto.getTag()));
     }
 
     @DeleteMapping("/{id}")

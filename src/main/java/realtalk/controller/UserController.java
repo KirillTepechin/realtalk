@@ -14,7 +14,9 @@ import realtalk.model.User;
 import realtalk.service.PostService;
 import realtalk.service.UserService;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @CrossOrigin(origins = "*")
@@ -49,9 +51,16 @@ public class UserController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/edit-profile", consumes = {MULTIPART_FORM_DATA_VALUE})
     public UserDto editProfile(@AuthenticationPrincipal User user, @RequestParam(required = false) String name,
-                                   @RequestParam(required = false) String surname, @RequestParam(required = false) String password,
-                                   @RequestParam(required = false) String login, @RequestParam(required = false) MultipartFile file){
-        return userMapper.toUserDto(userService.updateUser(user,login, password, name, surname, file));
+                               @RequestParam(required = false) String surname, @RequestParam(required = false) String password,
+                               @RequestParam(required = false) String login, @RequestParam(required = false) MultipartFile file,
+                               @RequestParam(required = false) Date borthdate, @RequestParam(required = false) String city){
+        return userMapper.toUserDto(userService.updateUser(user,login, password, name, surname, file, borthdate, city));
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PutMapping(value = "/edit-preferences")
+    public UserDto editPreferences(@AuthenticationPrincipal User user, @RequestParam Set<String> tags){
+        return userMapper.toUserDto(userService.updateUserPreferences(user, tags));
     }
 
     /**

@@ -25,6 +25,9 @@ public class Post {
     @NonNull
     private Date date;
 
+    @NonNull
+    private String tag;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @NonNull

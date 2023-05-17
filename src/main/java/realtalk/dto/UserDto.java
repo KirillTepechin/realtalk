@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.Date;
+
 /**
  * Дто для упрощения информации о пользователе
  */
@@ -21,4 +23,6 @@ public class UserDto {
     @Length(min = 3, max = 20)
     private String surname;
     private String photo;
+    private String city;
+    private Date borthdate;
 }

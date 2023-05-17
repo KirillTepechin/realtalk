@@ -25,13 +25,14 @@ public class User implements UserDetails {
     private String login;
     @NonNull
     private String password;
-
     @NonNull
     private String name;
-
     @NonNull
     private String surname;
     private String photo;
+    private String city;
+    private Date borthdate;
+    private Set<String> tags;
     @ManyToMany
     @JoinTable(
             name = "user_subscribers",

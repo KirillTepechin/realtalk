@@ -13,6 +13,7 @@ public class PostDto {
     private Long id;
     private String text;
     private Date date;
+    private String tag;
     private UserDto user;
     private List<CommentDto> comments;
     @JsonIgnore

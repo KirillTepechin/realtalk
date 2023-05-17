@@ -16,8 +16,10 @@ import realtalk.service.exception.UserNotFoundException;
 import realtalk.service.exception.WrongLoginOrPasswordException;
 import realtalk.util.FileUploadUtil;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -79,7 +81,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User updateUser(User user,String login,String password, String name, String surname, MultipartFile file){
+    public User updateUser(User user,String login,String password, String name, String surname, MultipartFile file,
+                           Date borthdate, String city){
         final User curUser = findUser(user.getId());
         if(name != null && !name.isBlank())
             curUser.setName(name);
@@ -96,9 +99,21 @@ public class UserService implements UserDetailsService {
             curUser.setSurname(surname);
         if(file!=null)
             curUser.setPhoto(fileUploadUtil.uploadFile(file));
+        if(borthdate != null)
+            curUser.setBorthdate(borthdate);
+        if(city != null && !city.isBlank())
+            curUser.setCity(city);
 
         return userRepository.save(curUser);
     }
+
+    @Transactional
+    public User updateUserPreferences(User user, Set<String> tags){
+        final User curUser = findUser(user.getId());
+        curUser.setTags(tags);
+        return userRepository.save(curUser);
+    }
+
     @Transactional
     public boolean subscribe(User user, User subscribed){
         if(!user.getSubscriptions().contains(subscribed)) {
