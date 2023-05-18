@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,16 +33,12 @@ public class UserController {
     @Autowired
     private PostMapper postMapper;
 
-    @PostMapping("/register")
-    public void register(@Valid @RequestBody RegisterDto registerDto) {
-        User user = userMapper.fromRegisterDto(registerDto);
-        userService.registration(user);
-    }
     @PostMapping(value = "/register", consumes = {MULTIPART_FORM_DATA_VALUE})
     public void register(@RequestParam String name,
-                               @RequestParam String surname, @RequestParam String password,
-                               @RequestParam String login, @RequestParam(required = false) MultipartFile file,
-                               @RequestParam(required = false) Date borthdate, @RequestParam(required = false) String city){
+                         @RequestParam String surname, @RequestParam String password,
+                         @RequestParam String login, @RequestParam(required = false) MultipartFile file,
+                         @RequestParam(required = false) @DateTimeFormat(pattern= "yyyy-MM-dd") Date borthdate,
+                         @RequestParam(required = false) String city){
         userService.registration(login, password, name, surname, file, borthdate, city);
     }
     @PostMapping("/auth")
