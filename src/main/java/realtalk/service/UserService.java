@@ -57,24 +57,13 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void registration(User user) {
-        if(userRepository.findByLogin(user.getLogin()) == null) {
-            //validate
-            user.setPassword(encoder.encode(user.getPassword()));
-            userRepository.save(user);
-        } else {
-            throw new UserLoginExistsException(user.getLogin());
-        }
-    }
-
-    @Transactional
     public void registration(String login,String password, String name, String surname, MultipartFile file,
                            Date borthdate, String city){
         var user = new User();
         if(name != null && !name.isBlank())
             user.setName(name);
         if(login != null && !login.isBlank()){
-            if(userRepository.findByLogin(user.getLogin()) == null) {
+            if(userRepository.findByLogin(login) == null) {
                 user.setLogin(login);
             } else {
                 throw new UserLoginExistsException(login);
@@ -168,6 +157,7 @@ public class UserService implements UserDetailsService {
         userRepository.delete(user);
         return user;
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByLogin(username);
