@@ -37,7 +37,13 @@ public class UserController {
         User user = userMapper.fromRegisterDto(registerDto);
         userService.registration(user);
     }
-
+    @PostMapping(value = "/register", consumes = {MULTIPART_FORM_DATA_VALUE})
+    public void register(@RequestParam String name,
+                               @RequestParam String surname, @RequestParam String password,
+                               @RequestParam String login, @RequestParam(required = false) MultipartFile file,
+                               @RequestParam(required = false) Date borthdate, @RequestParam(required = false) String city){
+        userService.registration(login, password, name, surname, file, borthdate, city);
+    }
     @PostMapping("/auth")
     public String auth(@RequestBody LoginDto loginDto) {
         User user = userMapper.fromLoginDto(loginDto);

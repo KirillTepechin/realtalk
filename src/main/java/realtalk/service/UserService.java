@@ -57,14 +57,41 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User registration(User user) {
+    public void registration(User user) {
         if(userRepository.findByLogin(user.getLogin()) == null) {
             //validate
             user.setPassword(encoder.encode(user.getPassword()));
-            return userRepository.save(user);
+            userRepository.save(user);
         } else {
             throw new UserLoginExistsException(user.getLogin());
         }
+    }
+
+    @Transactional
+    public void registration(String login,String password, String name, String surname, MultipartFile file,
+                           Date borthdate, String city){
+        var user = new User();
+        if(name != null && !name.isBlank())
+            user.setName(name);
+        if(login != null && !login.isBlank()){
+            if(userRepository.findByLogin(user.getLogin()) == null) {
+                user.setLogin(login);
+            } else {
+                throw new UserLoginExistsException(login);
+            }
+        }
+        if(password != null && !password.isBlank())
+            user.setPassword(encoder.encode(password));
+        if(surname != null && !surname.isBlank())
+            user.setSurname(surname);
+        if(file!=null)
+            user.setPhoto(fileUploadUtil.uploadFile(file));
+        if(borthdate != null)
+            user.setBorthdate(borthdate);
+        if(city != null && !city.isBlank())
+            user.setCity(city);
+
+        userRepository.save(user);
     }
 
     @Transactional
