@@ -1,5 +1,6 @@
 package realtalk.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -16,6 +17,7 @@ public class UserProfileInfoDto {
     private String surname;
     private String photo;
     private String city;
+    @JsonFormat(pattern="dd.MM.yyyy")
     private Date borthdate;
     private Set<UserDto> subscribers;
     private Set<UserDto> subscriptions;

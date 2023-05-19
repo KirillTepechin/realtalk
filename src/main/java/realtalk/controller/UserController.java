@@ -56,7 +56,8 @@ public class UserController {
     public UserDto editProfile(@AuthenticationPrincipal User user, @RequestParam(required = false) String name,
                                @RequestParam(required = false) String surname, @RequestParam(required = false) String password,
                                @RequestParam(required = false) String login, @RequestParam(required = false) MultipartFile file,
-                               @RequestParam(required = false) Date borthdate, @RequestParam(required = false) String city){
+                               @RequestParam(required = false)@DateTimeFormat(pattern= "yyyy-MM-dd") Date borthdate,
+                               @RequestParam(required = false) String city){
         return userMapper.toUserDto(userService.updateUser(user,login, password, name, surname, file, borthdate, city));
     }
 
