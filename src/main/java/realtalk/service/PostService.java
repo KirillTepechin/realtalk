@@ -8,10 +8,7 @@ import realtalk.model.User;
 import realtalk.repository.PostRepository;
 import realtalk.service.exception.PostNotFoundException;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -50,7 +47,9 @@ public class PostService {
     }
 
     public List<Post> getRecommendFeed(User user) {
-        return postRepository.findAllByTagIn(user.getTags());
+        List<Post> recs = postRepository.findAllByTagIn(user.getTags());
+        recs.removeIf(post -> Objects.equals(post.getUser().getId(), user.getId()));
+        return recs;
     }
 
     @Transactional
