@@ -39,15 +39,15 @@ public class PostService {
 
     @Transactional
     public List<Post> getUserPosts(User user){
-        return postRepository.findAllByUser(user);
+        return postRepository.findAllByUserOrderByDateDesc(user);
     }
 
     public List<Post> getFeed(User user) {
-        return postRepository.findAllByUserIn(user.getSubscriptions());
+        return postRepository.findAllByUserInOrderByDateDesc(user.getSubscriptions());
     }
 
     public List<Post> getRecommendFeed(User user) {
-        List<Post> recs = postRepository.findAllByTagIn(user.getTags());
+        List<Post> recs = postRepository.findAllByTagInOrderByDateDesc(user.getTags());
         recs.removeIf(post -> Objects.equals(post.getUser().getId(), user.getId()));
         return recs;
     }
@@ -76,7 +76,7 @@ public class PostService {
 
     @Transactional
     public void deleteAllUserPosts(User user){
-        postRepository.deleteAll(postRepository.findAllByUser(user));
+        postRepository.deleteAll(postRepository.findAllByUserOrderByDateDesc(user));
     }
 
 }
