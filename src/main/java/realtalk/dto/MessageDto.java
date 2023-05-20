@@ -1,13 +1,18 @@
 package realtalk.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 @Data
-public abstract class MessageDto {
-    private Long id;
+@NoArgsConstructor
+public class MessageDto {
+    private int id;
     private UserDto userDto;
     private String text;
     private Date date;
-    public abstract MessageAction getAction();
+
+    public MessageAction getAction() {
+        return null;
+    }
 }

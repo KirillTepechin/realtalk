@@ -2,11 +2,9 @@ package realtalk.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import realtalk.dto.MessageDto;
 import realtalk.model.User;
 import realtalk.service.MessageService;
@@ -19,8 +17,8 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @MessageMapping("send-to-chat/{id}")
-    public void sendMessage(MessageDto messageDto, @AuthenticationPrincipal User user, @PathVariable Long id) throws Exception {
+    @MessageMapping("chat/{id}")
+    public void sendMessage(@Payload MessageDto messageDto, @AuthenticationPrincipal User user, @PathVariable Long id) throws Exception {
         messageService.createMessage(user, id, messageDto.getText());
     }
 
