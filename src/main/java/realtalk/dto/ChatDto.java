@@ -10,4 +10,5 @@ public class ChatDto {
     private String name;
     private String image;
     private List<UserDto> users;
+    //private List<MessageDto> messages;
 }

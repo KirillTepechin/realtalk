@@ -43,6 +43,12 @@ public class ChatController {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping(value = "/{id}")
+    public ChatDto getChatById(@PathVariable Long id){
+        return chatMapper.toChatDto(chatService.findChat(id));
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "edit-chat/{id}", consumes = {MULTIPART_FORM_DATA_VALUE})
     public ChatDto editChat(@PathVariable Long id, @RequestParam(required = false) String name,
                             @RequestParam(required = false) MultipartFile image ){
