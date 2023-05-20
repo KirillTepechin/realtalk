@@ -21,6 +21,8 @@ public class Chat {
     @NonNull
     public String name;
     public String image;
+    @NonNull
+    public boolean isPrivate;
     @OneToMany
     @JoinColumn(name = "chat_id")
     public List<Message> messages;

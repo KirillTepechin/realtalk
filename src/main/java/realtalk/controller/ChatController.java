@@ -31,7 +31,7 @@ public class ChatController {
     //TODO: будут ли у чатов создатели с доп правами, например на удаление?
     public ChatDto createChat(@AuthenticationPrincipal User user, @RequestBody ChatCreateDto chatCreateDto){
         chatCreateDto.getUserIds().add(user.getId());
-        return chatMapper.toChatDto(chatService.createChat(chatCreateDto.getName(), chatCreateDto.getUserIds()));
+        return chatMapper.toChatDto(chatService.createChat(chatCreateDto.getName(), chatCreateDto.getIsPrivate(), chatCreateDto.getUserIds()));
     }
 
     @SecurityRequirement(name = "Bearer Authentication")

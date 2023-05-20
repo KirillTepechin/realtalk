@@ -9,6 +9,7 @@ public class ChatDto {
     private Long id;
     private String name;
     private String image;
+    private Boolean isPrivate;
     private List<UserDto> users;
-    //private List<MessageDto> messages;
+    private List<MessageOnReadDto> messages;
 }

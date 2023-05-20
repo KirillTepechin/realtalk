@@ -40,9 +40,9 @@ public class ChatService {
     }
 
     @Transactional
-    public Chat createChat(String name, List<Long> usersId) {
+    public Chat createChat(String name, boolean isPrivate, List<Long> usersId) {
         List<User> users = usersId.stream().map(id -> userService.findUser(id)).toList();
-        final Chat chat = new Chat(name, users);
+        final Chat chat = new Chat(name, isPrivate, users);
         chatRepository.save(chat);
         users.forEach(user -> {
             user.getChats().add(chat);
