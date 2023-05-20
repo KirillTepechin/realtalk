@@ -12,6 +12,7 @@ public class WebsocketConfiguration implements WebSocketMessageBrokerConfigurer 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/chat");
+        config.setApplicationDestinationPrefixes("/app");
     }
 
     public void registerStompEndpoints(StompEndpointRegistry registry) {
