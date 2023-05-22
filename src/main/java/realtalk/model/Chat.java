@@ -23,7 +23,7 @@ public class Chat {
     public String image;
     @NonNull
     public boolean isPrivate;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "chat_id")
     public List<Message> messages;
     @NonNull
@@ -33,5 +33,7 @@ public class Chat {
     public void preRemove(){
         users.forEach(user -> user.getChats().remove(this));
     }
+    @Transient
+    public Message lastMessage;
     public Date lastMessageDate;
 }

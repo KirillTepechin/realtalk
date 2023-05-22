@@ -12,6 +12,7 @@ import java.util.Set;
  */
 @Data
 public class UserProfileInfoDto {
+    private Long id;
     private String login;
     private String name;
     private String surname;

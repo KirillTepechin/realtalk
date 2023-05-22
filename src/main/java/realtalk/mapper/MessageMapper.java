@@ -7,7 +7,7 @@ import realtalk.model.Message;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MessageMapper {
-    Message fromMessageDto(MessageDto messageDto);
+    //Message fromMessageDto(MessageDto messageDto);
     MessageOnReadDto toMessageOnReadDto(Message messageDto);
     MessageOnCreateDto toMessageOnCreateDto(Message message);
     MessageOnDeleteDto toMessageOnDeleteDto(Message message);

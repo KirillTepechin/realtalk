@@ -21,16 +21,18 @@ public class Message {
     @NonNull
     public Date date;
     @NonNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "chat_id")
     public Chat chat;
 
     @NonNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     public User user;
+
     @PostPersist
     void updateChatLastMessageDate(){
-        chat.setLastMessageDate(date);
+        chat.setLastMessage(this);
+        chat.setLastMessageDate(this.getDate());
     }
 }

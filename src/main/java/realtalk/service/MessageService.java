@@ -8,6 +8,7 @@ import realtalk.dto.MessageDto;
 import realtalk.dto.MessageOnCreateDto;
 import realtalk.mapper.MessageMapper;
 import realtalk.model.*;
+import realtalk.repository.ChatRepository;
 import realtalk.repository.MessageRepository;
 
 import java.util.Date;
@@ -22,6 +23,10 @@ public class MessageService {
     @Autowired
     private ChatService chatService;
     @Autowired
+    private ChatRepository chatRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Transactional(readOnly = true)
@@ -32,14 +37,18 @@ public class MessageService {
     }
 
     @Transactional
-    public void createMessage(User user, Long chatId, String text) {
+    public void createMessage(String userLogin, Long chatId, String text) {
         Chat chat = chatService.findChat(chatId);
+        User user = userService.findUserByLogin(userLogin);
         Date date = new Date();
 
         final Message message = new Message(text, date, chat, user);
         messageRepository.save(message);
+        chat.setLastMessageDate(message.getDate());
+        chat.setLastMessage(message);
 
-        simpMessagingTemplate.convertAndSend("/chat/"+chatId, messageMapper.toMessageOnCreateDto(message));
+        chatRepository.save(chat);
+        simpMessagingTemplate.convertAndSend("/topic/"+chatId, messageMapper.toMessageOnCreateDto(message));
     }
 
     @Transactional
