@@ -1,10 +1,7 @@
 package realtalk.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +15,6 @@ import realtalk.service.UserService;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @CrossOrigin(origins = "*")
@@ -65,7 +60,7 @@ public class UserController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/edit-preferences")
-    public UserDto editPreferences(@AuthenticationPrincipal User user, @RequestBody TmpDto tags){
+    public UserDto editPreferences(@AuthenticationPrincipal User user, @RequestBody TagsDto tags){
         return userMapper.toUserDto(userService.updateUserPreferences(user, tags.getTags()));
     }
 
