@@ -11,7 +11,6 @@ import java.util.Date;
  */
 @Data
 public class UserDto {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     @Length(min = 3, max = 20)
     private String login;
