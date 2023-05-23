@@ -9,6 +9,6 @@ import java.util.Set;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByUserOrderByDateDesc(User user);
-    List<Post> findAllByTagInOrderByDateDesc(Set<String> tags);
+    List<Post> findAllByTagsInOrderByDateDesc(Set<String> tags);
     List<Post> findAllByUserInOrderByDateDesc(Set<User> users);
 }

@@ -20,13 +20,14 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NonNull
     private String text;
     @NonNull
     private Date date;
 
     @NonNull
-    private String tag;
+    private Set<String> tags;
+
+    public String photo;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

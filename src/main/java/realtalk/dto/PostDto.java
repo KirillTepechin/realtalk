@@ -16,8 +16,9 @@ public class PostDto {
     private String text;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date date;
-    private String tag;
+    private Set<String> tags;
     private UserDto user;
+    private String photo;
     private List<CommentDto> comments;
     @JsonIgnore
     private Set<UserDto> likes;

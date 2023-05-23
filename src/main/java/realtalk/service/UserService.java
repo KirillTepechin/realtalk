@@ -16,10 +16,7 @@ import realtalk.service.exception.UserNotFoundException;
 import realtalk.service.exception.WrongLoginOrPasswordException;
 import realtalk.util.FileUploadUtil;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -102,7 +99,7 @@ public class UserService implements UserDetailsService {
         final User curUser = findUser(user.getId());
         if(name != null && !name.isBlank())
             curUser.setName(name);
-        if(login != null && !login.isBlank()){
+        if(login != null && !login.isBlank() && !Objects.equals(login, user.getLogin())){
             if(userRepository.findByLogin(user.getLogin()) == null) {
                 curUser.setLogin(login);
             } else {

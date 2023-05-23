@@ -3,10 +3,12 @@ package realtalk.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import realtalk.model.Post;
 import realtalk.model.User;
 import realtalk.repository.PostRepository;
 import realtalk.service.exception.PostNotFoundException;
+import realtalk.util.FileUploadUtil;
 
 import java.util.*;
 
@@ -15,6 +17,9 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private FileUploadUtil fileUploadUtil;
+
     @Transactional(readOnly = true)
     public Post findPost(Long id) {
         final Optional<Post> post = postRepository.findById(id);
@@ -22,18 +27,30 @@ public class PostService {
     }
 
     @Transactional
-    public Post createPost(User user, String text, String tag) {
+    public Post createPost(User user, String text, Set<String> tags) {
         Date date = new Date();
-        final Post post = new Post(text, date, tag, user);
+        final Post post = new Post(date, tags, user);
+        if(text != null){
+            post.setText(text);
+        }
         //validate
         return postRepository.save(post);
     }
 
     @Transactional
-    public Post updatePost(Long id, String text, String tag){
+    public Post updatePost(Long id, String text, Set<String> tags){
         final Post post = findPost(id);
-        post.setText(text);
-        post.setTag(tag);
+        if(text != null)
+            post.setText(text);
+        post.setTags(tags);
+        return postRepository.save(post);
+    }
+
+    @Transactional
+    public Post uploadPhotoForPost(Long id, MultipartFile image) {
+        final Post post = findPost(id);
+        if(image!=null)
+            post.setPhoto(fileUploadUtil.uploadFile(image));
         return postRepository.save(post);
     }
 
@@ -47,7 +64,7 @@ public class PostService {
     }
 
     public List<Post> getRecommendFeed(User user) {
-        List<Post> recs = postRepository.findAllByTagInOrderByDateDesc(user.getTags());
+        List<Post> recs = postRepository.findAllByTagsInOrderByDateDesc(user.getTags());
         recs.removeIf(post -> Objects.equals(post.getUser().getId(), user.getId()));
         return recs;
     }
