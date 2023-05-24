@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import realtalk.dto.MessageDto;
 import realtalk.dto.MessageOnCreateDto;
+import realtalk.dto.MessageOnUpdateDto;
 import realtalk.model.User;
 import realtalk.service.MessageService;
 
@@ -27,12 +28,12 @@ public class MessageController {
     }
 
     @MessageMapping("update-message/{id}")
-    public void updateMessage(@DestinationVariable Long id, MessageDto messageDto) {
+    public void updateMessage(@DestinationVariable Long id, MessageOnUpdateDto messageDto) {
         messageService.updateMessage(id, messageDto.getText());
     }
 
     @MessageMapping("delete-message/{id}")
-    public void deleteMessage(@PathVariable Long id) {
+    public void deleteMessage(@DestinationVariable Long id) {
         messageService.deleteMessage(id);
     }
 }

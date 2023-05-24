@@ -20,11 +20,6 @@ public class PostDto {
     private UserDto user;
     private String photo;
     private List<CommentDto> comments;
-    @JsonIgnore
-    private Set<UserDto> likes;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private int likesCount;
-    public int getLikesCount() {
-        return likes.size();
-    }
+    private Set<UserDto> likes;
 }

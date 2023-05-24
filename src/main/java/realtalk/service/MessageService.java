@@ -57,7 +57,7 @@ public class MessageService {
         message.setText(text);
         messageRepository.save(message);
 
-        simpMessagingTemplate.convertAndSend("/chat/"+message.getChat().getId(), messageMapper.toMessageOnUpdateDto(message));
+        simpMessagingTemplate.convertAndSend("/topic/"+message.getChat().getId(), messageMapper.toMessageOnUpdateDto(message));
     }
 
     @Transactional
@@ -65,6 +65,6 @@ public class MessageService {
         final Message message = findMessage(id);
         messageRepository.delete(message);
 
-        simpMessagingTemplate.convertAndSend("/chat/"+message.getChat().getId(), messageMapper.toMessageOnDeleteDto(message));
+        simpMessagingTemplate.convertAndSend("/topic/"+message.getChat().getId(), messageMapper.toMessageOnDeleteDto(message));
     }
 }
