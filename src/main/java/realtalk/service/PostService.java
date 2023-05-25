@@ -27,6 +27,11 @@ public class PostService {
     }
 
     @Transactional
+    public List<Post> findAllPosts(){
+        return postRepository.findAll();
+    }
+
+    @Transactional
     public Post createPost(User user, String text, Set<String> tags) {
         Date date = new Date();
         final Post post = new Post(date, tags, user);
@@ -66,8 +71,23 @@ public class PostService {
     }
 
     public List<Post> getRecommendFeed(User user) {
-        List<Post> recs = postRepository.findAllByTagsInOrderByDateDesc(user.getTags());
+        List<Post> allPosts = findAllPosts();
+        List<Post> recs = new ArrayList<>();
+        for (Post post : allPosts) {
+            for (String postTag : post.getTags()) {
+                for (String userTag : user.getTags()) {
+                    if(postTag.equals(userTag)){
+                        recs.add(post);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
         recs.removeIf(post -> Objects.equals(post.getUser().getId(), user.getId()));
+        for (User subscription : user.getSubscriptions()) {
+            recs.removeIf(post -> Objects.equals(post.getUser().getId(), subscription.getId()));
+        }
         return recs;
     }
 
