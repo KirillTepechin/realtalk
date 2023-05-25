@@ -14,7 +14,7 @@ import java.util.Set;
 public class PostDto {
     private Long id;
     private String text;
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="dd MMM yyyy в HH:mm")
     private Date date;
     private Set<String> tags;
     private UserDto user;

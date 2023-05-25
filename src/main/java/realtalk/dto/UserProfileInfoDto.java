@@ -19,7 +19,7 @@ public class UserProfileInfoDto {
     private String photo;
     private String city;
     private Set<String> tags;
-    @JsonFormat(pattern="dd.MM.yyyy")
+    @JsonFormat(pattern="dd MMM yyyy")
     private Date borthdate;
     private Set<UserDto> subscribers;
     private Set<UserDto> subscriptions;

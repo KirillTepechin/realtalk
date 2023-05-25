@@ -34,7 +34,7 @@ public class UserController {
     public void register(@RequestParam String name,
                          @RequestParam String surname, @RequestParam String password,
                          @RequestParam String login, @RequestParam(required = false) MultipartFile file,
-                         @RequestParam(required = false) @DateTimeFormat(pattern= "yyyy-MM-dd") Date borthdate,
+                         @RequestParam(required = false) @DateTimeFormat(pattern= "dd.MM.yyyy") Date borthdate,
                          @RequestParam(required = false) String city){
         userService.registration(login, password, name, surname, file, borthdate, city);
     }
@@ -52,10 +52,10 @@ public class UserController {
     @PutMapping(value = "/edit-profile", consumes = {MULTIPART_FORM_DATA_VALUE})
     public UserDto editProfile(@AuthenticationPrincipal User user, @RequestParam(required = false) String name,
                                @RequestParam(required = false) String surname, @RequestParam(required = false) String password,
-                               @RequestParam(required = false) String login, @RequestParam(required = false) MultipartFile file,
-                               @RequestParam(required = false)@DateTimeFormat(pattern= "yyyy-MM-dd") Date borthdate,
+                               @RequestParam(required = false) String login, @RequestParam(required = false) MultipartFile photo,
+                               @RequestParam(required = false)@DateTimeFormat(pattern= "dd.MM.yyyy") Date borthdate,
                                @RequestParam(required = false) String city){
-        return userMapper.toUserDto(userService.updateUser(user,login, password, name, surname, file, borthdate, city));
+        return userMapper.toUserDto(userService.updateUser(user,login, password, name, surname, photo, borthdate, city));
     }
 
     @SecurityRequirement(name = "Bearer Authentication")

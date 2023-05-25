@@ -11,7 +11,7 @@ public abstract class MessageDto {
     private Long id;
     private UserDto user;
     private String text;
-    @JsonFormat(pattern="dd.MM.yyyy")
+    @JsonFormat(pattern="dd MMM yyyy в HH:mm")
     private Date date;
 
     public MessageAction getAction() {
