@@ -51,6 +51,8 @@ public class PostService {
         final Post post = findPost(id);
         if(image!=null)
             post.setPhoto(fileUploadUtil.uploadFile(image));
+        else
+            post.setPhoto(null);
         return postRepository.save(post);
     }
 

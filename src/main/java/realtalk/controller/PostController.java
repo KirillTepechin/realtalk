@@ -31,18 +31,18 @@ public class PostController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(path = "/{id}/upload", consumes = MULTIPART_FORM_DATA_VALUE)
-    public PostDto uploadPostPhoto(@PathVariable Long id, @RequestParam MultipartFile file) {
+    public PostDto uploadPostPhoto(@PathVariable Long id, @RequestParam(required = false) MultipartFile file) {
         return postMapper.toPostDto(postService.uploadPhotoForPost(id, file));
     }
 
-    @PutMapping(value = "/{id}", consumes = {MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/{id}")
     public PostDto editPost(@PathVariable Long id, @RequestBody PostDto postDto){
         return postMapper.toPostDto(postService.updatePost(id, postDto.getText(), postDto.getTags()));
     }
 
     @DeleteMapping("/{id}")
-    public PostDto deletePost(@PathVariable Long id){
-        return postMapper.toPostDto(postService.deletePost(id));
+    public void deletePost(@PathVariable Long id){
+        postService.deletePost(id);
     }
 
     /**
