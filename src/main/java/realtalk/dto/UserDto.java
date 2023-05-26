@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Дто для упрощения информации о пользователе

@@ -71,17 +71,22 @@ public class PostService {
     }
 
     public List<Post> getRecommendFeed(User user) {
+        boolean added = false;
         List<Post> allPosts = findAllPosts();
         List<Post> recs = new ArrayList<>();
         for (Post post : allPosts) {
             for (String postTag : post.getTags()) {
                 for (String userTag : user.getTags()) {
-                    if(postTag.equals(userTag)){
+                    if(Objects.equals(postTag, userTag)){
                         recs.add(post);
+                        added = true;
                         break;
                     }
                 }
-                break;
+                if(added){
+                    added = false;
+                    break;
+                }
             }
         }
         recs.removeIf(post -> Objects.equals(post.getUser().getId(), user.getId()));

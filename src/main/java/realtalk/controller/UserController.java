@@ -60,8 +60,8 @@ public class UserController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/edit-preferences")
-    public UserDto editPreferences(@AuthenticationPrincipal User user, @RequestBody TagsDto tags){
-        return userMapper.toUserDto(userService.updateUserPreferences(user, tags.getTags()));
+    public UserProfileInfoDto editPreferences(@AuthenticationPrincipal User user, @RequestBody TagsDto tags){
+        return userMapper.toUserProfileInfoDto(userService.updateUserPreferences(user, tags.getTags()));
     }
 
     /**
