@@ -31,6 +31,7 @@ public class Comment {
     private Post post;
 
     @NonNull
+    @Column(length = 1000)
     private String text;
     @NonNull
     private Date date;

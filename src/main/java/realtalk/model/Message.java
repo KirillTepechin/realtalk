@@ -17,6 +17,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
     @NonNull
+    @Column(length = 1000)
     public String text;
     @NonNull
     public Date date;

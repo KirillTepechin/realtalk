@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import realtalk.bot.SimpleBot;
 import realtalk.dto.MessageDto;
 import realtalk.dto.MessageOnCreateDto;
 import realtalk.mapper.MessageMapper;
@@ -28,6 +29,8 @@ public class MessageService {
     private UserService userService;
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+    @Autowired
+    private SimpleBot bot;
 
     @Transactional(readOnly = true)
     public Message findMessage(Long id) {
@@ -48,7 +51,18 @@ public class MessageService {
         chat.setLastMessage(message);
 
         chatRepository.save(chat);
+
         simpMessagingTemplate.convertAndSend("/topic/"+chatId, messageMapper.toMessageOnCreateDto(message));
+
+        User userBot = userService.findUserByLogin("bot");
+        if(chat.getUsers().contains(userBot)){
+            String textFromBot = bot.sayInReturn(text, true);
+            Message messageFromBot = new Message(textFromBot, new Date(), chat, userBot);
+            messageRepository.save(messageFromBot);
+            chat.setLastMessageDate(messageFromBot.getDate());
+            chat.setLastMessage(messageFromBot);
+            simpMessagingTemplate.convertAndSend("/topic/"+chatId, messageMapper.toMessageOnCreateDto(messageFromBot));
+        }
     }
 
     @Transactional
