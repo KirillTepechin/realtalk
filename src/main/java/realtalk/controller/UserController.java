@@ -88,6 +88,15 @@ public class UserController {
                 .toList();
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/preferences-find")
+    public List<UserProfileInfoDto> findUsersByPreferences(@AuthenticationPrincipal User user){
+        return userService.findUsersByPreferences(user)
+                .stream()
+                .map(userFind -> userMapper.toUserProfileInfoDto(userFind))
+                .toList();
+    }
+
     @GetMapping("/{login}")
     public UserProfileInfoDto viewProfile(@PathVariable String login){
         return userMapper.toUserProfileInfoDto(userService.findUserByLogin(login));

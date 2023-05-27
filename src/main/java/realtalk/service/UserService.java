@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import realtalk.jwt.JwtProvider;
+import realtalk.model.Post;
 import realtalk.model.User;
 import realtalk.repository.UserRepository;
 import realtalk.service.exception.UserLoginExistsException;
@@ -22,6 +23,8 @@ import java.util.*;
 public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PostService postService;
     @Autowired
     private FileUploadUtil fileUploadUtil;
     @Autowired
@@ -51,6 +54,49 @@ public class UserService implements UserDetailsService {
 //        query = template.toUpperCase();
         query = query.toUpperCase();
         return userRepository.findByLoginIgnoreCaseContainingOrNameIgnoreCaseContainingOrSurnameIgnoreCaseContaining(query, query, query);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> findUsersByPreferences(User me){
+        Set<String> requestTags = me.getTags();
+        List<User> allUsers = findAllUsers();
+        List<User> recUsers = new ArrayList<>();
+        //Map<User.login, Map<Tag, amountPostsWithTag>>
+        Map<String, Map<String,Integer>> userPostStatistics = new HashMap<>();
+
+        for (User user : allUsers) {
+            Map<String,Integer> postTags = new HashMap<>();
+            for (Post post : user.getPosts()) {
+                for (String postTag : post.getTags()) {
+                    if(!postTags.containsKey(postTag)){
+                        postTags.put(postTag, 1);
+                    }
+                    else {
+                        int amountPosts = postTags.get(postTag);
+                        postTags.put(postTag, amountPosts + 1);
+                    }
+                }
+            }
+            userPostStatistics.put(user.getLogin(), postTags);
+        }
+
+        int amountPosts = 0;
+        for (String userStatistic : userPostStatistics.keySet()) {
+            Map<String, Integer> userTags = userPostStatistics.get(userStatistic);
+            for (String userTag : userTags.keySet()) {
+                if (requestTags.contains(userTag)) {
+                    User user = findUserByLogin(userStatistic);
+                    amountPosts = user.getPosts().size();
+                    int amountPostsWithRequestTag = userTags.get(userTag);
+                    if ((amountPostsWithRequestTag * 100 / amountPosts)  > 50){
+                        recUsers.add(user);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return recUsers;
     }
 
     @Transactional
