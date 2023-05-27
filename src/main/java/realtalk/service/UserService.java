@@ -45,7 +45,8 @@ public class UserService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public User findUserByLogin(String login){
-        return userRepository.findByLogin(login);
+        User user = userRepository.findByLogin(login);
+        return user;
     }
 
     @Transactional(readOnly = true)
@@ -95,7 +96,6 @@ public class UserService implements UserDetailsService {
                 }
             }
         }
-
         return recUsers;
     }
 

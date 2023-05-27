@@ -102,6 +102,11 @@ public class UserController {
         return userMapper.toUserProfileInfoDto(userService.findUserByLogin(login));
     }
 
+    @GetMapping("/find-by-login")
+    public UserProfileInfoDto findUserByLogin(@RequestParam String login){
+        return userMapper.toUserProfileInfoDto(userService.findUserByLogin(login));
+    }
+
     @GetMapping("/user-posts/{login}")
     public List<PostDto> viewUserPosts(@PathVariable String login) {
         return postService.getUserPosts(userService.findUserByLogin(login))
