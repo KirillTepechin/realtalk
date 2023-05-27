@@ -146,7 +146,7 @@ public class UserService implements UserDetailsService {
         if(name != null && !name.isBlank())
             curUser.setName(name);
         if(login != null && !login.isBlank() && !Objects.equals(login, user.getLogin())){
-            if(userRepository.findByLogin(user.getLogin()) == null) {
+            if(userRepository.findByLogin(login) == null) {
                 curUser.setLogin(login);
             } else {
                 throw new UserLoginExistsException(login);
