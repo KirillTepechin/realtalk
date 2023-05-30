@@ -12,5 +12,5 @@ public class ChatDto {
     private Boolean isPrivate;
     private List<UserDto> users;
     private List<MessageOnReadDto> messages;
-    private MessageOnReadDto lastMessage;
+    private UserDto creator;
 }

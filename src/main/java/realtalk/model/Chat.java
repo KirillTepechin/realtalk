@@ -22,18 +22,19 @@ public class Chat {
     public String name;
     public String image;
     @NonNull
-    public boolean isPrivate;
+    public Boolean isPrivate;
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "chat_id")
     public List<Message> messages;
     @NonNull
     @ManyToMany(mappedBy = "chats")
     public List<User> users;
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    public User creator;
     @PreRemove
     public void preRemove(){
         users.forEach(user -> user.getChats().remove(this));
     }
-    @Transient
-    public Message lastMessage;
     public Date lastMessageDate;
 }

@@ -31,9 +31,9 @@ public class Message {
     @JoinColumn(name = "user_id")
     public User user;
 
+    public String photo;
     @PostPersist
     void updateChatLastMessageDate(){
-        chat.setLastMessage(this);
         chat.setLastMessageDate(this.getDate());
     }
 }
