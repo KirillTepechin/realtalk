@@ -9,5 +9,5 @@ import realtalk.model.User;
 import java.util.List;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
-    List<Chat> findAllByUsersLoginOrderByLastMessageDate(String login);
+    List<Chat> findAllByUsersLoginOrderByLastMessageDateDesc(String login);
 }

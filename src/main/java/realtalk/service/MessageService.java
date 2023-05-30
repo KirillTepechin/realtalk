@@ -48,7 +48,6 @@ public class MessageService {
         final Message message = new Message(text, date, chat, user);
         messageRepository.save(message);
         chat.setLastMessageDate(message.getDate());
-        chat.setLastMessage(message);
 
         chatRepository.save(chat);
 
@@ -60,7 +59,6 @@ public class MessageService {
             Message messageFromBot = new Message(textFromBot, new Date(), chat, userBot);
             messageRepository.save(messageFromBot);
             chat.setLastMessageDate(messageFromBot.getDate());
-            chat.setLastMessage(messageFromBot);
             simpMessagingTemplate.convertAndSend("/topic/"+chatId, messageMapper.toMessageOnCreateDto(messageFromBot));
         }
     }
