@@ -1,5 +1,6 @@
 package realtalk.service;
 
+import io.jsonwebtoken.security.SecurityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,13 +33,23 @@ public class ChatService {
     public List<Chat> findAllChatsByUser(User user) {
         return chatRepository.findAllByUsersLoginOrderByLastMessageDateDesc(user.getLogin());
     }
-
+    private void securityCheck(Chat chat, User user){
+        if(!chat.getUsers().contains(user)){
+            throw new SecurityException("Доступ к этому чату запрещен");
+        }
+    }
     @Transactional(readOnly = true)
-    public Chat findChat(Long id) {
+    public Chat findChat(Long id, User user) {
+        final Optional<Chat> optionalChat = chatRepository.findById(id);
+        final Chat chat = optionalChat.orElseThrow(() -> new ChatNotFoundException(id));
+        securityCheck(chat, user);
+        return chat;
+    }
+    @Transactional(readOnly = true)
+    protected Chat findChat(Long id) {
         final Optional<Chat> chat = chatRepository.findById(id);
         return chat.orElseThrow(() -> new ChatNotFoundException(id));
     }
-
     @Transactional
     public Chat createChat(String name, boolean isPrivate, List<Long> usersId, User creator) {
         usersId.add(creator.getId());

@@ -32,8 +32,7 @@ public class PostController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(path = "/{id}/upload", consumes = MULTIPART_FORM_DATA_VALUE)
     public PostDto uploadPostPhoto(@PathVariable Long id, @RequestParam(required = false) MultipartFile file) {
-        PostDto post = postMapper.toPostDto(postService.uploadPhotoForPost(id, file));
-        return post;
+        return postMapper.toPostDto(postService.uploadPhotoForPost(id, file));
     }
 
     @PutMapping(value = "/{id}")

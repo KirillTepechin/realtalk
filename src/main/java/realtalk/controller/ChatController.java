@@ -1,7 +1,9 @@
 package realtalk.controller;
 
+import io.jsonwebtoken.security.SecurityException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,8 +44,8 @@ public class ChatController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(value = "/{id}")
-    public ChatDto getChatById(@PathVariable Long id){
-        return chatMapper.toChatDto(chatService.findChat(id));
+    public ChatDto getChatById(@PathVariable Long id, @AuthenticationPrincipal User user){
+        return chatMapper.toChatDto(chatService.findChat(id, user));
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
@@ -74,5 +76,11 @@ public class ChatController {
     @DeleteMapping("/{id}")
     public ChatDto deleteChat(@PathVariable Long id){
         return chatMapper.toChatDto(chatService.deleteChat(id));
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(SecurityException.class)
+    public String chatException(SecurityException e) {
+        return e.getMessage();
     }
 }

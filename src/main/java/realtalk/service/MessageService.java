@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import realtalk.bot.SimpleBot;
 import realtalk.dto.MessageDto;
 import realtalk.dto.MessageOnCreateDto;
@@ -11,6 +12,7 @@ import realtalk.mapper.MessageMapper;
 import realtalk.model.*;
 import realtalk.repository.ChatRepository;
 import realtalk.repository.MessageRepository;
+import realtalk.util.FileUploadUtil;
 
 import java.util.Date;
 import java.util.Optional;
@@ -27,6 +29,8 @@ public class MessageService {
     private ChatRepository chatRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private FileUploadUtil fileUploadUtil;
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
@@ -62,7 +66,13 @@ public class MessageService {
             simpMessagingTemplate.convertAndSend("/topic/"+chatId, messageMapper.toMessageOnCreateDto(messageFromBot));
         }
     }
-
+    @Transactional
+    public void uploadFile(Long id, MultipartFile file) {
+        final Message message = findMessage(id);
+        message.setFile(fileUploadUtil.uploadFile(file));
+        messageRepository.save(message);
+        simpMessagingTemplate.convertAndSend("/topic/"+message.getChat().getId(), messageMapper.toMessageOnUpdateDto(message));
+    }
     @Transactional
     public void updateMessage(Long id, String text){
         final Message message = findMessage(id);
@@ -79,4 +89,6 @@ public class MessageService {
 
         simpMessagingTemplate.convertAndSend("/topic/"+message.getChat().getId(), messageMapper.toMessageOnDeleteDto(message));
     }
+
+
 }

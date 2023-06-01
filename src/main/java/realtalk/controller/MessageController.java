@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import realtalk.dto.MessageDto;
 import realtalk.dto.MessageOnCreateDto;
 import realtalk.dto.MessageOnUpdateDto;
@@ -23,8 +24,11 @@ public class MessageController {
 
     @MessageMapping("create-message/{id}")
     public void sendMessage(MessageOnCreateDto messageDto, @DestinationVariable Long id) {
-
         messageService.createMessage(messageDto.getUser().getLogin(), id, messageDto.getText());
+    }
+    @MessageMapping("upload-file/{id}")
+    public void uploadFile(@DestinationVariable Long id, @RequestParam MultipartFile file){
+        messageService.uploadFile(id, file);
     }
 
     @MessageMapping("update-message/{id}")
