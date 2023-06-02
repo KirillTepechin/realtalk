@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.Fetch;
 
 import java.util.Date;
 import java.util.List;
@@ -37,4 +36,15 @@ public class Chat {
         users.forEach(user -> user.getChats().remove(this));
     }
     public Date lastMessageDate;
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "name = " + name + ", " +
+                "image = " + image + ", " +
+                "isPrivate = " + isPrivate + ", " +
+                "creator = " + creator + ", " +
+                "lastMessageDate = " + lastMessageDate + ")";
+    }
 }

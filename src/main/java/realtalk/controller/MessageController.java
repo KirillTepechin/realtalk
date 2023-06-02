@@ -3,16 +3,11 @@ package realtalk.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import realtalk.dto.MessageDto;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.BinaryMessage;
 import realtalk.dto.MessageOnCreateDto;
 import realtalk.dto.MessageOnUpdateDto;
-import realtalk.model.User;
 import realtalk.service.MessageService;
 
 @CrossOrigin(origins = "*")
@@ -24,16 +19,12 @@ public class MessageController {
 
     @MessageMapping("create-message/{id}")
     public void sendMessage(MessageOnCreateDto messageDto, @DestinationVariable Long id) {
-        messageService.createMessage(messageDto.getUser().getLogin(), id, messageDto.getText());
-    }
-    @MessageMapping("upload-file/{id}")
-    public void uploadFile(@DestinationVariable Long id, @RequestParam MultipartFile file){
-        messageService.uploadFile(id, file);
+        messageService.createMessage(messageDto.getUser().getLogin(), id, messageDto.getText(), messageDto.getBinaryFile());
     }
 
     @MessageMapping("update-message/{id}")
     public void updateMessage(@DestinationVariable Long id, MessageOnUpdateDto messageDto) {
-        messageService.updateMessage(id, messageDto.getText());
+        messageService.updateMessage(id, messageDto.getText(), messageDto.getBinaryFile(), messageDto.getIsFileDeleted());
     }
 
     @MessageMapping("delete-message/{id}")

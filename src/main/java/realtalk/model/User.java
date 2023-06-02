@@ -12,7 +12,6 @@ import java.util.*;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -51,17 +50,14 @@ public class User implements UserDetails {
 
     @OneToMany
     @JoinColumn(name = "user_id")
-    @ToString.Exclude
     private List<Post> posts;
 
     @OneToMany
     @JoinColumn(name = "user_id")
-    @ToString.Exclude
     private List<Comment> comments;
 
     @OneToMany
     @JoinColumn(name = "user_id")
-    @ToString.Exclude
     private List<Message> messages;
 
     @ManyToMany
@@ -70,7 +66,6 @@ public class User implements UserDetails {
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "chat_id") }
     )
-    @ToString.Exclude
     private List<Chat> chats;
 
     @Override
@@ -114,5 +109,19 @@ public class User implements UserDetails {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "login = " + login + ", " +
+                "password = " + password + ", " +
+                "name = " + name + ", " +
+                "surname = " + surname + ", " +
+                "photo = " + photo + ", " +
+                "city = " + city + ", " +
+                "borthdate = " + borthdate + ", " +
+                "tags = " + tags + ")";
     }
 }

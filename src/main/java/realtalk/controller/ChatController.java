@@ -31,7 +31,8 @@ public class ChatController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public ChatDto createChat(@AuthenticationPrincipal User user, @RequestBody ChatCreateDto chatCreateDto){
-        return chatMapper.toChatDto(chatService.createChat(chatCreateDto.getName(), chatCreateDto.getIsPrivate(), chatCreateDto.getUserIds(), user));
+        return chatMapper.toChatDto(chatService.createChat(chatCreateDto.getName(),
+                chatCreateDto.getIsPrivate(), chatCreateDto.getUserIds(), user));
     }
 
     @SecurityRequirement(name = "Bearer Authentication")

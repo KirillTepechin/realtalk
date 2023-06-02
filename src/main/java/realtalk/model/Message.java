@@ -1,10 +1,7 @@
 package realtalk.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
@@ -32,6 +29,7 @@ public class Message {
     public User user;
 
     public String file;
+    public Boolean isFileImage;
     @PostPersist
     void updateChatLastMessageDate(){
         chat.setLastMessageDate(this.getDate());

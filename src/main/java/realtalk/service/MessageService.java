@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import realtalk.bot.SimpleBot;
+import realtalk.dto.FileDto;
 import realtalk.dto.MessageDto;
 import realtalk.dto.MessageOnCreateDto;
 import realtalk.mapper.MessageMapper;
 import realtalk.model.*;
 import realtalk.repository.ChatRepository;
 import realtalk.repository.MessageRepository;
+import realtalk.service.exception.ChatNotFoundException;
 import realtalk.util.FileUploadUtil;
 
 import java.util.Date;
@@ -39,17 +41,20 @@ public class MessageService {
     @Transactional(readOnly = true)
     public Message findMessage(Long id) {
         final Optional<Message> message = messageRepository.findById(id);
-        //return message.orElseThrow(() -> new ChatNotFoundException(id));
-        return message.orElse(null);
+        return message.orElseThrow(() -> new ChatNotFoundException(id));
     }
 
     @Transactional
-    public void createMessage(String userLogin, Long chatId, String text) {
+    public void createMessage(String userLogin, Long chatId, String text, FileDto file) {
         Chat chat = chatService.findChat(chatId);
         User user = userService.findUserByLogin(userLogin);
         Date date = new Date();
 
         final Message message = new Message(text, date, chat, user);
+        if(file!=null){
+            message.setIsFileImage(file.getBase64().startsWith("data:image"));
+            message.setFile(fileUploadUtil.uploadFile(file));
+        }
         messageRepository.save(message);
         chat.setLastMessageDate(message.getDate());
 
@@ -66,17 +71,18 @@ public class MessageService {
             simpMessagingTemplate.convertAndSend("/topic/"+chatId, messageMapper.toMessageOnCreateDto(messageFromBot));
         }
     }
+
     @Transactional
-    public void uploadFile(Long id, MultipartFile file) {
-        final Message message = findMessage(id);
-        message.setFile(fileUploadUtil.uploadFile(file));
-        messageRepository.save(message);
-        simpMessagingTemplate.convertAndSend("/topic/"+message.getChat().getId(), messageMapper.toMessageOnUpdateDto(message));
-    }
-    @Transactional
-    public void updateMessage(Long id, String text){
+    public void updateMessage(Long id, String text, FileDto file, boolean isFileDeleted){
         final Message message = findMessage(id);
         message.setText(text);
+        if(file!=null){
+            message.setIsFileImage(file.getBase64().startsWith("data:image"));
+            message.setFile(fileUploadUtil.uploadFile(file));
+        }
+        if(isFileDeleted){
+            message.setFile(null);
+        }
         messageRepository.save(message);
 
         simpMessagingTemplate.convertAndSend("/topic/"+message.getChat().getId(), messageMapper.toMessageOnUpdateDto(message));

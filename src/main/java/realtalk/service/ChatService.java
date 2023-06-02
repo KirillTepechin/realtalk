@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import realtalk.dto.ChatDto;
 import realtalk.model.Chat;
+import realtalk.model.Message;
 import realtalk.model.User;
 import realtalk.repository.ChatRepository;
 import realtalk.repository.UserRepository;
@@ -15,8 +16,10 @@ import realtalk.service.exception.UserNotFoundException;
 import realtalk.util.FileUploadUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatService {
@@ -31,7 +34,10 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<Chat> findAllChatsByUser(User user) {
-        return chatRepository.findAllByUsersLoginOrderByLastMessageDateDesc(user.getLogin());
+        return chatRepository.findAllChatsByUser(user.getId())
+                .stream()
+                .sorted(Comparator.comparing(Chat::getLastMessageDate).reversed())
+                .toList();
     }
     private void securityCheck(Chat chat, User user){
         if(!chat.getUsers().contains(user)){
@@ -40,8 +46,7 @@ public class ChatService {
     }
     @Transactional(readOnly = true)
     public Chat findChat(Long id, User user) {
-        final Optional<Chat> optionalChat = chatRepository.findById(id);
-        final Chat chat = optionalChat.orElseThrow(() -> new ChatNotFoundException(id));
+        Chat chat = chatRepository.findByIdOrderByMessagesDates(id);
         securityCheck(chat, user);
         return chat;
     }
