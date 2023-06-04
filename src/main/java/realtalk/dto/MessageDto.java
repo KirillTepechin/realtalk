@@ -20,6 +20,7 @@ public abstract class MessageDto {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private FileDto binaryFile;
     private Boolean isFileImage;
+    private PostDto replyPost;
     public MessageAction getAction() {
         return null;
     }

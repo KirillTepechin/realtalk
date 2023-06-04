@@ -7,6 +7,8 @@ import lombok.Data;
 public class MessageOnUpdateDto extends MessageDto{
     @JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
     private Boolean isFileDeleted;
+    @JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
+    private Boolean isReplyDeleted;
     @Override
     public MessageAction getAction() {
         return MessageAction.ON_UPDATE;

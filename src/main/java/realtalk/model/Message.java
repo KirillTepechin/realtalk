@@ -30,6 +30,9 @@ public class Message {
 
     public String file;
     public Boolean isFileImage;
+    @ManyToOne
+    @JoinColumn(name = "reply_post_id")
+    public Post replyPost;
     @PostPersist
     void updateChatLastMessageDate(){
         chat.setLastMessageDate(this.getDate());

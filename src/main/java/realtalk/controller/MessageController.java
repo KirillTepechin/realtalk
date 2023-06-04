@@ -19,12 +19,14 @@ public class MessageController {
 
     @MessageMapping("create-message/{id}")
     public void sendMessage(MessageOnCreateDto messageDto, @DestinationVariable Long id) {
-        messageService.createMessage(messageDto.getUser().getLogin(), id, messageDto.getText(), messageDto.getBinaryFile());
+        messageService.createMessage(messageDto.getUser().getLogin(), id, messageDto.getText(),
+                messageDto.getBinaryFile(), messageDto.getReplyPost());
     }
 
     @MessageMapping("update-message/{id}")
     public void updateMessage(@DestinationVariable Long id, MessageOnUpdateDto messageDto) {
-        messageService.updateMessage(id, messageDto.getText(), messageDto.getBinaryFile(), messageDto.getIsFileDeleted());
+        messageService.updateMessage(id, messageDto.getText(), messageDto.getBinaryFile(),
+                messageDto.getIsFileDeleted(), messageDto.getIsReplyDeleted());
     }
 
     @MessageMapping("delete-message/{id}")

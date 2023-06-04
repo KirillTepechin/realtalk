@@ -9,6 +9,7 @@ import realtalk.bot.SimpleBot;
 import realtalk.dto.FileDto;
 import realtalk.dto.MessageDto;
 import realtalk.dto.MessageOnCreateDto;
+import realtalk.dto.PostDto;
 import realtalk.mapper.MessageMapper;
 import realtalk.model.*;
 import realtalk.repository.ChatRepository;
@@ -30,6 +31,8 @@ public class MessageService {
     @Autowired
     private ChatRepository chatRepository;
     @Autowired
+    private PostService postService;
+    @Autowired
     private UserService userService;
     @Autowired
     private FileUploadUtil fileUploadUtil;
@@ -45,7 +48,7 @@ public class MessageService {
     }
 
     @Transactional
-    public void createMessage(String userLogin, Long chatId, String text, FileDto file) {
+    public void createMessage(String userLogin, Long chatId, String text, FileDto file, PostDto replyPost) {
         Chat chat = chatService.findChat(chatId);
         User user = userService.findUserByLogin(userLogin);
         Date date = new Date();
@@ -54,6 +57,9 @@ public class MessageService {
         if(file!=null){
             message.setIsFileImage(file.getBase64().startsWith("data:image"));
             message.setFile(fileUploadUtil.uploadFile(file));
+        }
+        if(replyPost!=null){
+           message.setReplyPost(postService.findPost(replyPost.getId()));
         }
         messageRepository.save(message);
         chat.setLastMessageDate(message.getDate());
@@ -73,7 +79,7 @@ public class MessageService {
     }
 
     @Transactional
-    public void updateMessage(Long id, String text, FileDto file, boolean isFileDeleted){
+    public void updateMessage(Long id, String text, FileDto file, boolean isFileDeleted, boolean isReplyDeleted){
         final Message message = findMessage(id);
         message.setText(text);
         if(file!=null){
@@ -82,6 +88,9 @@ public class MessageService {
         }
         if(isFileDeleted){
             message.setFile(null);
+        }
+        if(isReplyDeleted){
+            message.setReplyPost(null);
         }
         messageRepository.save(message);
 

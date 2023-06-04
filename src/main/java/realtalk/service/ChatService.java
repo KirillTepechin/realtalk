@@ -36,7 +36,9 @@ public class ChatService {
     public List<Chat> findAllChatsByUser(User user) {
         return chatRepository.findAllChatsByUser(user.getId())
                 .stream()
-                .sorted(Comparator.comparing(Chat::getLastMessageDate).reversed())
+                .sorted(Comparator.comparing(Chat::getLastMessageDate,
+                        Comparator.nullsFirst(Comparator.naturalOrder())
+                ).reversed())
                 .toList();
     }
     private void securityCheck(Chat chat, User user){
