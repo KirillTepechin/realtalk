@@ -22,7 +22,7 @@ public class Chat {
     public String image;
     @NonNull
     public Boolean isPrivate;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "chat_id")
     public List<Message> messages;
     @NonNull

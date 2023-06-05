@@ -49,6 +49,9 @@ public class ChatService {
     @Transactional(readOnly = true)
     public Chat findChat(Long id, User user) {
         Chat chat = chatRepository.findByIdOrderByMessagesDates(id);
+	if(chat==null){
+	    throw new ChatNotFoundException(id);
+	}
         securityCheck(chat, user);
         return chat;
     }

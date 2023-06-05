@@ -12,7 +12,7 @@ import realtalk.dto.ChatDto;
 import realtalk.mapper.ChatMapper;
 import realtalk.model.User;
 import realtalk.service.ChatService;
-
+import realtalk.service.exception.ChatNotFoundException;
 import java.util.List;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -81,7 +81,13 @@ public class ChatController {
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(SecurityException.class)
-    public String chatException(SecurityException e) {
+    public String chatSecurityException(SecurityException e) {
+        return e.getMessage();
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ChatNotFoundException.class)
+    public String chatNotFoundException(ChatNotFoundException e) {
         return e.getMessage();
     }
 }
