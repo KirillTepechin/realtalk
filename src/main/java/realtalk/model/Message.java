@@ -34,7 +34,7 @@ public class Message {
     @JoinColumn(name = "reply_post_id")
     private Post replyPost;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany
     @JoinTable(
             name = "message_read_by",
             joinColumns = { @JoinColumn(name = "message_id") },

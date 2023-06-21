@@ -2,6 +2,7 @@ package realtalk.service;
 
 import io.jsonwebtoken.security.SecurityException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,15 +44,7 @@ public class ChatService {
             throw new SecurityException("Доступ к этому чату запрещен");
         }
     }
-    @Transactional
-    public void readChat(Long id, User user) {
-        Chat chat = chatRepository.findByIdOrderByMessagesDates(id);
-        if(chat==null){
-            throw new ChatNotFoundException(id);
-        }
-        chat.getMessages().forEach(mes->mes.getReadBy().add(user));
-        chatRepository.save(chat);
-    }
+
     @Transactional
     public Chat findChat(Long id, User user) {
         Chat chat = chatRepository.findByIdOrderByMessagesDates(id);
@@ -60,7 +53,12 @@ public class ChatService {
         }
         securityCheck(chat, user);
         chat.getMessages().forEach(mes->mes.getReadBy().add(user));
-        return chatRepository.save(chat);
+        try {
+            return chatRepository.save(chat);
+        }
+        catch (Exception e) {
+            return chat;
+        }
     }
     @Transactional(readOnly = true)
     protected Chat findChat(Long id) {
