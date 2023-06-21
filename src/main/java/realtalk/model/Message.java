@@ -3,7 +3,7 @@ package realtalk.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.util.*;
 
 @Data
 @Entity
@@ -12,29 +12,33 @@ import java.util.Date;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long id;
+    private Long id;
     @NonNull
     @Column(length = 1000)
-    public String text;
+    private String text;
     @NonNull
-    public Date date;
+    private Date date;
     @NonNull
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "chat_id")
-    public Chat chat;
+    private Chat chat;
 
     @NonNull
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
-    public User user;
+    private User user;
 
-    public String file;
-    public Boolean isFileImage;
+    private String file;
+    private Boolean isFileImage;
     @ManyToOne
     @JoinColumn(name = "reply_post_id")
-    public Post replyPost;
-    @PostPersist
-    void updateChatLastMessageDate(){
-        chat.setLastMessageDate(this.getDate());
-    }
+    private Post replyPost;
+
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "message_read_by",
+            joinColumns = { @JoinColumn(name = "message_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+    )
+    private Set<User> readBy;
 }

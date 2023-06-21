@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.socket.BinaryMessage;
 
 import java.util.Date;
 @Data
@@ -21,7 +19,5 @@ public abstract class MessageDto {
     private FileDto binaryFile;
     private Boolean isFileImage;
     private PostDto replyPost;
-    public MessageAction getAction() {
-        return null;
-    }
+    public abstract MessageAction getAction();
 }

@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import realtalk.dto.ChatDto;
 import realtalk.model.Chat;
-import realtalk.model.Message;
 import realtalk.model.User;
 import realtalk.repository.ChatRepository;
 import realtalk.repository.UserRepository;
@@ -15,11 +13,10 @@ import realtalk.service.exception.ChatNotFoundException;
 import realtalk.service.exception.UserNotFoundException;
 import realtalk.util.FileUploadUtil;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class ChatService {
@@ -46,14 +43,24 @@ public class ChatService {
             throw new SecurityException("Доступ к этому чату запрещен");
         }
     }
-    @Transactional(readOnly = true)
+    @Transactional
+    public void readChat(Long id, User user) {
+        Chat chat = chatRepository.findByIdOrderByMessagesDates(id);
+        if(chat==null){
+            throw new ChatNotFoundException(id);
+        }
+        chat.getMessages().forEach(mes->mes.getReadBy().add(user));
+        chatRepository.save(chat);
+    }
+    @Transactional
     public Chat findChat(Long id, User user) {
         Chat chat = chatRepository.findByIdOrderByMessagesDates(id);
-	if(chat==null){
-	    throw new ChatNotFoundException(id);
-	}
+        if(chat==null){
+            throw new ChatNotFoundException(id);
+        }
         securityCheck(chat, user);
-        return chat;
+        chat.getMessages().forEach(mes->mes.getReadBy().add(user));
+        return chatRepository.save(chat);
     }
     @Transactional(readOnly = true)
     protected Chat findChat(Long id) {
@@ -81,11 +88,6 @@ public class ChatService {
         final Chat curChat = findChat(id);
         chatRepository.delete(curChat);
         return curChat;
-    }
-
-    @Transactional
-    public void deleteAllChats() {
-        chatRepository.deleteAll();
     }
 
     @Transactional
@@ -133,5 +135,31 @@ public class ChatService {
         if(image!=null)
             curChat.setImage(fileUploadUtil.uploadFile(image));
         return chatRepository.save(curChat);
+    }
+    @Transactional(readOnly = true)
+    public Integer getUnreadCountInChat(Long id, User user) {
+        final Chat chat = findChat(id);
+        AtomicInteger counter = new AtomicInteger();
+
+        chat.getMessages().forEach(message -> {
+            if(!message.getReadBy().contains(user)){
+                counter.getAndIncrement();
+            }
+        });
+
+        return counter.get();
+    }
+
+    @Transactional(readOnly = true)
+    public Integer getCountOfUnreadChats(User user) {
+	AtomicInteger counter = new AtomicInteger();
+        List<Chat> chats = findAllChatsByUser(user);
+	chats.forEach(chat->{
+	    if(!chat.getMessages().get(chat.getMessages().size()-1).getReadBy().contains(user)){
+		counter.getAndIncrement();
+	    }
+	});
+
+	return counter.get();
     }
 }

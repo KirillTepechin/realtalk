@@ -4,19 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import realtalk.bot.SimpleBot;
 import realtalk.dto.FileDto;
-import realtalk.dto.MessageDto;
-import realtalk.dto.MessageOnCreateDto;
 import realtalk.dto.PostDto;
 import realtalk.mapper.MessageMapper;
-import realtalk.model.*;
-import realtalk.repository.ChatRepository;
+import realtalk.model.Chat;
+import realtalk.model.Message;
+import realtalk.model.User;
 import realtalk.repository.MessageRepository;
 import realtalk.service.exception.ChatNotFoundException;
 import realtalk.util.FileUploadUtil;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
 
@@ -28,8 +27,6 @@ public class MessageService {
     private MessageMapper messageMapper;
     @Autowired
     private ChatService chatService;
-    @Autowired
-    private ChatRepository chatRepository;
     @Autowired
     private PostService postService;
     @Autowired
@@ -61,10 +58,9 @@ public class MessageService {
         if(replyPost!=null){
            message.setReplyPost(postService.findPost(replyPost.getId()));
         }
-        messageRepository.save(message);
+        message.setReadBy(Collections.singleton(user));
         chat.setLastMessageDate(message.getDate());
-
-        chatRepository.save(chat);
+        messageRepository.save(message);
 
         simpMessagingTemplate.convertAndSend("/topic/"+chatId, messageMapper.toMessageOnCreateDto(message));
 
@@ -100,8 +96,14 @@ public class MessageService {
     @Transactional
     public void deleteMessage(Long id){
         final Message message = findMessage(id);
+        final Chat chat = message.getChat();
+        if(chat.getMessages().size()>1){
+            chat.setLastMessageDate(chat.getMessages().get(chat.getMessages().size()-2).getDate());
+        }
+        else{
+            chat.setLastMessageDate(null);
+        }
         messageRepository.delete(message);
-
         simpMessagingTemplate.convertAndSend("/topic/"+message.getChat().getId(), messageMapper.toMessageOnDeleteDto(message));
     }
 

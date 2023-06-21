@@ -48,6 +48,22 @@ public class ChatController {
     public ChatDto getChatById(@PathVariable Long id, @AuthenticationPrincipal User user){
         return chatMapper.toChatDto(chatService.findChat(id, user));
     }
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping(value = "{id}/read")
+    public void readChatById(@PathVariable Long id, @AuthenticationPrincipal User user){
+        chatService.readChat(id, user);
+    }
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping(value = "{id}/unread-count")
+    public Integer getUnreadCountInChat(@PathVariable Long id, @AuthenticationPrincipal User user){
+        return chatService.getUnreadCountInChat(id, user);
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping(value = "unread-count")
+    public Integer getCountOfUnreadChats(@AuthenticationPrincipal User user){
+        return chatService.getCountOfUnreadChats(user);
+    }
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "edit-chat/{id}", consumes = {MULTIPART_FORM_DATA_VALUE})
