@@ -150,14 +150,14 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public Integer getCountOfUnreadChats(User user) {
-	AtomicInteger counter = new AtomicInteger();
+        AtomicInteger counter = new AtomicInteger();
         List<Chat> chats = findAllChatsByUser(user);
-	chats.forEach(chat->{
-	    if(!chat.getMessages().get(chat.getMessages().size()-1).getReadBy().contains(user)){
-		counter.getAndIncrement();
-	    }
-	});
+        chats.forEach(chat -> {
+            if (!chat.getMessages().get(chat.getMessages().size() - 1).getReadBy().contains(user)) {
+                counter.getAndIncrement();
+            }
+        });
 
-	return counter.get();
+        return counter.get();
     }
 }

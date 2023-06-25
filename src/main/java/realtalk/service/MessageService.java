@@ -16,6 +16,7 @@ import realtalk.service.exception.ChatNotFoundException;
 import realtalk.util.FileUploadUtil;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 
@@ -98,7 +99,9 @@ public class MessageService {
         final Message message = findMessage(id);
         final Chat chat = message.getChat();
         if(chat.getMessages().size()>1){
-            chat.setLastMessageDate(chat.getMessages().get(chat.getMessages().size()-2).getDate());
+            chat.setLastMessageDate(chat.getMessages()
+                    .stream().sorted(Comparator.comparing(Message::getDate))
+                    .toList().get(chat.getMessages().size()-2).getDate());
         }
         else{
             chat.setLastMessageDate(null);
