@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="realtalk.RealtalkApplicationTests" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-10-01T16:55:38" hostname="DESKTOP-MP6S869" time="0.128">
+  <properties/>
+  <testcase name="loginException()" classname="realtalk.RealtalkApplicationTests" time="0.118"/>
+  <testcase name="contextLoads()" classname="realtalk.RealtalkApplicationTests" time="0.004"/>
+  <testcase name="simpleCalculate()" classname="realtalk.RealtalkApplicationTests" time="0.005"/>
+  <system-out><![CDATA[20:55:33.232 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [RealtalkApplicationTests]: using SpringBootContextLoader
+20:55:33.235 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [realtalk.RealtalkApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+20:55:33.237 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [realtalk.RealtalkApplicationTests]: RealtalkApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+20:55:33.255 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using ContextCustomizers for test class [RealtalkApplicationTests]: [DisableObservabilityContextCustomizer, PropertyMappingContextCustomizer, Customizer, ExcludeFilterContextCustomizer, DuplicateJsonObjectContextCustomizer, MockitoContextCustomizer, TestRestTemplateContextCustomizer, MockServerContainerContextCustomizer]
+20:55:33.303 [Test worker] DEBUG org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider - Identified candidate component class: file [C:\pet\realtalk\build\classes\java\main\realtalk\RealtalkApplication.class]
+20:55:33.304 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration realtalk.RealtalkApplication for test class realtalk.RealtalkApplicationTests
+20:55:33.377 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using TestExecutionListeners for test class [RealtalkApplicationTests]: [ServletTestExecutionListener, DirtiesContextBeforeModesTestExecutionListener, ApplicationEventsTestExecutionListener, MockitoTestExecutionListener, DependencyInjectionTestExecutionListener, DirtiesContextTestExecutionListener, TransactionalTestExecutionListener, SqlScriptsTestExecutionListener, WithSecurityContextTestExecutionListener, EventPublishingTestExecutionListener, ReactorContextTestExecutionListener, RestDocsTestExecutionListener, MockRestServiceServerResetTestExecutionListener, MockMvcPrintOnlyOnFailureTestExecutionListener, WebDriverTestExecutionListener, MockWebServiceServerTestExecutionListener, ResetMocksTestExecutionListener]
+20:55:33.378 [Test worker] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test class: class [RealtalkApplicationTests], class annotated with @DirtiesContext [false] with mode [null]
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.0.0)
+
+2023-10-01T20:55:33.554+04:00  INFO 24528 --- [    Test worker] realtalk.RealtalkApplicationTests        : Starting RealtalkApplicationTests using Java 17.0.8 with PID 24528 (started by kirte in C:\pet\realtalk)
+2023-10-01T20:55:33.555+04:00  INFO 24528 --- [    Test worker] realtalk.RealtalkApplicationTests        : No active profile set, falling back to 1 default profile: "default"
+2023-10-01T20:55:34.157+04:00  INFO 24528 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-10-01T20:55:34.211+04:00  INFO 24528 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 49 ms. Found 5 JPA repository interfaces.
+2023-10-01T20:55:34.575+04:00  INFO 24528 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-10-01T20:55:34.623+04:00  INFO 24528 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.5.Final
+2023-10-01T20:55:34.757+04:00  WARN 24528 --- [    Test worker] org.hibernate.orm.deprecation            : HHH90000021: Encountered deprecated setting [javax.persistence.sharedCache.mode], use [jakarta.persistence.sharedCache.mode] instead
+2023-10-01T20:55:34.834+04:00  INFO 24528 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-10-01T20:55:34.943+04:00  INFO 24528 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4bbc21bd
+2023-10-01T20:55:34.944+04:00  INFO 24528 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-10-01T20:55:34.978+04:00  INFO 24528 --- [    Test worker] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-10-01T20:55:35.763+04:00  INFO 24528 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-10-01T20:55:35.768+04:00  INFO 24528 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-10-01T20:55:36.694+04:00  WARN 24528 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-10-01T20:55:36.799+04:00  INFO 24528 --- [    Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5339cdc6, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5b9ed77b, org.springframework.security.web.context.SecurityContextHolderFilter@16ecdb6d, org.springframework.security.web.header.HeaderWriterFilter@1e1f467f, org.springframework.security.web.authentication.logout.LogoutFilter@2a8eed58, realtalk.jwt.JwtFilter@2f6ede9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3eed0375, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@41dbf02b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@a8177f6, org.springframework.security.web.access.ExceptionTranslationFilter@6f2e0945, org.springframework.security.web.access.intercept.AuthorizationFilter@89017e5]
+2023-10-01T20:55:37.807+04:00  INFO 24528 --- [    Test worker] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2023-10-01T20:55:37.810+04:00  INFO 24528 --- [    Test worker] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6ca6d195]]
+2023-10-01T20:55:37.811+04:00  INFO 24528 --- [    Test worker] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2023-10-01T20:55:37.819+04:00  INFO 24528 --- [    Test worker] realtalk.RealtalkApplicationTests        : Started RealtalkApplicationTests in 4.415 seconds (process running for 5.197)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
